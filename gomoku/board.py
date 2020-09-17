@@ -55,6 +55,3 @@ class Board:
         b & (b >> self.size) & (b >> self.size * 2) & (b >> self.size * 3) & (b >> self.size * 4) or \
         b & (b >> (self.size + 1)) & (b >> (self.size * 2 + 2)) & (b >> (self.size * 3 + 3)) & (b >> (self.size * 4 + 4)) or \
         b & (b >> (self.size - 1)) & (b >> (self.size * 2 - 2)) & (b >> (self.size * 3 - 3)) & (b >> (self.size * 4 - 4)) else False
-
-    def eval(self, b):
-        pass
