@@ -1,4 +1,5 @@
 import sys
+import gmpy2
 
 def bit_flip(n, i):
     '''Flips bit at index i.'''
@@ -33,6 +34,14 @@ class Board:
         move_bit = r * 15 + c
         return c >= 1 and r >= 1 and r <= self.size and c <= self.size and not (bit_get(self.b1, move_bit) or bit_get(self.b2, move_bit))
 
+    def get_board(self, current=True):
+        '''
+        Returns board of current player if current is set to True.
+        '''
+        if self.turns % 2 == 0 and current:
+            return self.b1
+        return self.b2
+
     def move(self, r, c):
         '''
         Make move.
@@ -49,9 +58,3 @@ class Board:
         self.turns += 1
         self.moves.append((r, c))
         return True
-
-    def check_win(self, b):
-        return True if (b & (b >> 1) & (b >> 2) & (b >> 3) & (b >> 4)) or \
-        b & (b >> self.size) & (b >> self.size * 2) & (b >> self.size * 3) & (b >> self.size * 4) or \
-        b & (b >> (self.size + 1)) & (b >> (self.size * 2 + 2)) & (b >> (self.size * 3 + 3)) & (b >> (self.size * 4 + 4)) or \
-        b & (b >> (self.size - 1)) & (b >> (self.size * 2 - 2)) & (b >> (self.size * 3 - 3)) & (b >> (self.size * 4 - 4)) else False

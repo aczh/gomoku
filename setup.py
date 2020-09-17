@@ -12,6 +12,7 @@ setup(
         'gomoku',
     ],
     install_requires=[
-        'pytest'
+        'pytest',
+        'gmpy2',
     ],
 )
