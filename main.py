@@ -1,4 +1,4 @@
 from gomoku.board import Board
 
-def wow():
-    b = Board()
+b = Board(size=15)
+print('hi')

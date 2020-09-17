@@ -4,7 +4,7 @@ with open('.version', 'r') as f:
     VERSION = f.read()
 
 setup(
-    name='Gomoku',
+    name='gomoku',
     description='Gomoku AI Implementation',
     author='Allen Zhang',
     version=VERSION,

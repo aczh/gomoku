@@ -1,3 +1,5 @@
+import sys
+
 def bit_flip(n, i):
     '''Flips bit at index i.'''
     return (n ^ (1 << (i - 1)))
@@ -29,9 +31,14 @@ class Board:
 
     def is_valid_move(self, r, c):
         move_bit = r * 15 + c
-        return r <= 15 and c <= 15 and not (bit_get(self.b1, move_bit) or bit_get(self.b2, move_bit))
+        return c >= 1 and r >= 1 and r <= self.size and c <= self.size and not (bit_get(self.b1, move_bit) or bit_get(self.b2, move_bit))
 
     def move(self, r, c):
+        '''
+        Make move.
+        Increment turn count.
+        Update move history.
+        '''
         if not self.is_valid_move(r, c):
             return False
 
@@ -44,25 +51,10 @@ class Board:
         return True
 
     def check_win(self, b):
-        h = b & (b >> 1) & (b >> 2) & (b >> 3) & (b >> 4)
-        v = b & (b >> self.size) & (b >> self.size * 2) & (b >> self.size * 3) & (b >> self.size * 4)
-        d1 = b & (b >> (self.size + 1)) & (b >> (self.size * 2 + 2)) & (b >> (self.size * 3 + 3)) & (b >> (self.size * 4 + 4))
-        d2 = b & (b >> (self.size - 1)) & (b >> (self.size * 2 - 2)) & (b >> (self.size * 3 - 3)) & (b >> (self.size * 4 - 4))
-        print(bin(h))
-        print(bin(v))
+        return True if (b & (b >> 1) & (b >> 2) & (b >> 3) & (b >> 4)) or \
+        b & (b >> self.size) & (b >> self.size * 2) & (b >> self.size * 3) & (b >> self.size * 4) or \
+        b & (b >> (self.size + 1)) & (b >> (self.size * 2 + 2)) & (b >> (self.size * 3 + 3)) & (b >> (self.size * 4 + 4)) or \
+        b & (b >> (self.size - 1)) & (b >> (self.size * 2 - 2)) & (b >> (self.size * 3 - 3)) & (b >> (self.size * 4 - 4)) else False
 
-b = Board()
-print(b.move(1, 1))
-print(b.move(2, 1))
-print(b.move(1, 2))
-print(b.move(3, 1))
-print(b.move(1, 3))
-print(b.move(4, 1))
-print(b.move(1, 4))
-print(b.move(5, 1))
-print(b.move(1, 5))
-print(b.move(6, 1))
-b.winning_move(b.b1)
-# print(bin(b.b2))
-b.winning_move(b.b2)
-b.print()
+    def eval(self, b):
+        pass
