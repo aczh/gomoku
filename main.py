@@ -1,8 +1,6 @@
 from gomoku.board import Board
+from gomoku.threat.threat_search import get_pattern
 
 b = Board(size=15)
-print('hi')
 
-# - o - o o -
-# - o o - o -
-# - o o o - -
+print(get_pattern(b))
