@@ -61,14 +61,15 @@ class Board:
 
     def print(self):
         '''Pretty prints the board.'''
+        print('=============================')
         for r in range(self.size):
             row = []
             for c in range(self.size):
                 bit_index = r * self.size + c
                 if gmpy2.bit_test(self.b1, bit_index):
-                    row.append('x')
-                elif gmpy2.bit_test(self.b2, bit_index):
                     row.append('o')
+                elif gmpy2.bit_test(self.b2, bit_index):
+                    row.append('x')
                 else:
                     row.append('-')
             print(' '.join(row))
