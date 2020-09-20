@@ -61,15 +61,46 @@ class Board:
 
     def print(self):
         '''Pretty prints the board.'''
-        print('=============================')
-        for r in range(self.size):
-            row = []
-            for c in range(self.size):
-                bit_index = r * self.size + c
+        # print('     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 ')
+        # print('     ______________________________')
+        # for r in range(self.size):
+        #     row = []
+        #     for c in range(self.size):
+        #         bit_index = r * self.size + c
+        #         if gmpy2.bit_test(self.b1, bit_index):
+        #             row.append('o')
+        #         elif gmpy2.bit_test(self.b2, bit_index):
+        #             row.append('x')
+        #         else:
+        #             row.append('-')
+        #     print(' '.join(row))
+        print('     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 ')
+        print('     ______________________________')
+        for row in range(self.size):
+            print('{:>2}  |'.format(row), end='')
+            for col in range(self.size):
+                bit_index = row * 15 + col
                 if gmpy2.bit_test(self.b1, bit_index):
-                    row.append('o')
+                    print('o ', end='')
                 elif gmpy2.bit_test(self.b2, bit_index):
-                    row.append('x')
+                    print('x ', end='')
                 else:
-                    row.append('-')
-            print(' '.join(row))
+                    print('- ', end='')
+                #
+                #
+				# mbit = gmpy2.bit_test(self.mask, row * 15 + col)
+				# cbit = gmpy2.bit_test(self.cur, row * 15 + col)
+                #
+				# if cbit:
+				# 	if self.moves % 2 == 0:
+				# 		print('o ', end='')
+				# 	else:
+				# 		print('x ', end='')
+				# elif mbit:
+				# 	if self.moves % 2 == 0:
+				# 		print('x ', end='')
+				# 	else:
+				# 		print('o ', end='')
+				# else:
+				# 	print('- ', end='')
+            print()
