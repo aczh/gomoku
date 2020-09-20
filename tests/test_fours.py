@@ -39,13 +39,9 @@ def test_fours_d2():
     ]
 
     b.moves(p1=p1_moves, p2=p2_moves)
-    b.print()
 
     p1_fours = get_fours(b)
     p2_fours = get_fours(b, current=False)
-
-    print(p1_fours)
-    print(p2_fours)
 
     assert set([158, 140, 70]) == set(p1_fours[3])
     assert set([101, 70, 6, 171, 76]) == set(p2_fours[3])
