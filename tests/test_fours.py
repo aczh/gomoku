@@ -43,6 +43,7 @@ def test_fours_d2():
     p1_fours = get_fours(b)
     p2_fours = get_fours(b, current=False)
 
+
     assert set([158, 140, 70]) == set(p1_fours[3])
     assert set([101, 70, 6, 171, 76]) == set(p2_fours[3])
 

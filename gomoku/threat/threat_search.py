@@ -27,23 +27,32 @@ def get_threes(board, current=True):
     b = board.get_board(current=current)
     threes = []
     for inc in [1, board.size, board.size + 1, board.size - 1]:
-        shifts = [0, 1, 2, 3]
-        # 0: - o o o - -
-        # 1: - o - o o -
-        # 2: - o o - o -
-        # 3: - - o o o -
+        # 01: - - o o o
+        # 02: - o - o o
+        # 03: - o o - o
+        # 04: - o o o -
 
-        threats = []
-        for x in shifts:
-            if x == 0:
-                bits = (b >> inc) & (b >> inc * 2) & (b >> inc * 3)
-            elif x == 1:
-                bits = (b >> inc) & (b >> inc * 3) & (b >> inc * 4)
-            elif x == 0:
-                bits = (b >> inc) & (b >> inc * 2) & (b >> inc * 4)
-            elif x == 0:
-                bits = (b >> inc * 2) & (b >> inc * 3) & (b >> inc * 4)
-    return []
+        # 12: o - - o o
+        # 13: o - o - o
+        # 14: o - o o -
+
+        # 23: o o - - o
+        # 24: o o - o -
+
+        # 34: o o o - -
+        threats = set()
+        for x in range(5):
+            for y in range(x + 1, 5):
+                r = [z for z in range(5) if z != x and z != y]
+                bits = (b >> inc * r[0]) & (b >> inc * r[1]) & (b >> inc * r[2])
+                ones = [
+                    threats.update([o + x * inc, o + y * inc])
+                    for o in get_ones(bits)
+                    if is_continuous(o, inc, 5) and board.is_valid_index(o + x * inc) and board.is_valid_index(o + y * inc)
+                ]
+        threes.append(list(threats))
+
+    return threes
 
 def get_fours(board, current=True):
     b = board.get_board(current=current)
@@ -69,8 +78,7 @@ def get_fours(board, current=True):
             elif x == 4:
                 bits = b & (b >> inc * 1) & (b >> inc * 2) & (b >> inc * 3)
 
-            ones = [o + x * inc for o in get_ones(bits) if board.is_valid_index(o + x * inc) and is_continuous(o, inc, 5)]
-            threats.update(ones)
+            ones = [threats.add(o + x * inc) for o in get_ones(bits) if board.is_valid_index(o + x * inc) and is_continuous(o, inc, 5)]
         fours.append(list(threats))
 
     return fours
