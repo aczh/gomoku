@@ -1,3 +1,4 @@
 class Threat:
-    def __init__(self):
-        pass
+    def __init__(self, start, inc):
+        self.start = start
+        self.inc = inc

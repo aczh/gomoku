@@ -49,7 +49,6 @@ def test_v_win():
     assert not has_five(b)
     assert not has_five(b, current=False)
 
-
     b.move(4, 0)
     b.move(10, 14)
 

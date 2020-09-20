@@ -11,13 +11,22 @@ class Board:
         # occupied squares
         self.o = 0
         self.turns = 0
-        self.moves = []
+        self.history = []
+
+    def moves(self, moves=[], p1=[], p2=[]):
+        if p1 and p2 and len(p1) == len(p2):
+            moves = [val for pair in zip(p1, p2) for val in pair]
+        for m in moves:
+            self.move(*m)
+
+    def is_valid_index(self, index):
+        return self.is_valid_move(index // self.size, index % self.size)
 
     def is_valid_move(self, r, c):
         '''
         Returns True if r, c fall within size constraints and the space is unoccupied.
         '''
-        return c >= 0 and r >= 0 and r < self.size and c < self.size and not gmpy2.bit_test(self.o, r * 15 + c)
+        return c >= 0 and r >= 0 and r < self.size and c < self.size and not gmpy2.bit_test(self.o, r * self.size + c)
 
     def get_board(self, current=True):
         '''
@@ -33,6 +42,8 @@ class Board:
         Increment turn count.
         Update move history.
         '''
+        self.history.append((self.b1, self.b2))
+
         if not self.is_valid_move(r, c):
             raise Exception(f'Invalid move: {r}, {c}')
 
@@ -47,7 +58,6 @@ class Board:
 
         # update turns and moves
         self.turns += 1
-        self.moves.append((r, c))
 
     def print(self):
         '''Pretty prints the board.'''
