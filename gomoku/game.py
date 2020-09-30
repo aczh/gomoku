@@ -13,8 +13,11 @@ class Game:
     def on_draw(self):
         print('Drawn game!')
 
-    def play(self):
+    def play(self, verbose=1):
         while not has_five(self.b) and not has_five(self.b, current=False):
+
+            print('\n\n-------------------------------------------')
+            print('Player {}\'s turn to move.'.format(self.b.turns % 2 + 1))
             self.b.print()
 
             if self.b.turns == self.b.size * self.b.size:
@@ -25,6 +28,11 @@ class Game:
                 move = self.p1.make_move(self.b)
             else:
                 move = self.p2.make_move(self.b)
+
+            if verbose:
+                print('\n\n====================================================================')
+                print('Player {} placed their piece at: {}, {}'.format(self.b.turns % 2 + 1, *move))
+                print('====================================================================')
 
             self.b.move(*move)
 

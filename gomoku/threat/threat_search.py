@@ -1,4 +1,7 @@
 import gmpy2
+from . import threat
+from .. import utils
+from .. utils import ThreatType
 
 def is_continuous(start, inc, length):
     end = start + inc * (length - 1)
@@ -16,16 +19,46 @@ def get_ones(num):
         i = one + 1
     return indices
 
-def get_threes(board, current=True):
+def get_fives(board, current=True):
     '''
-    Returns threes:
+    Returns five threats.
+    '''
+    b = board.get_board(current=current)
+    ret = []
+    for inc in [1, board.size, board.size + 1, board.size - 1]:
+        shifts = [0, 1, 2, 3, 4]
+        # 0: - o o o o
+        # 1: o - o o o
+        # 2: o o - o o
+        # 3: o o o - o
+        # 4: o o o o -
+
+        for x in shifts:
+            if x == 0:
+                bits = (b >> inc) & (b >> inc * 2) & (b >> inc * 3) & (b >> inc * 4)
+            elif x == 1:
+                bits = b & (b >> inc * 2) & (b >> inc * 3) & (b >> inc * 4)
+            elif x == 2:
+                bits = b & (b >> inc * 1) & (b >> inc * 3) & (b >> inc * 4)
+            elif x == 3:
+                bits = b & (b >> inc * 1) & (b >> inc * 2) & (b >> inc * 4)
+            elif x == 4:
+                bits = b & (b >> inc * 1) & (b >> inc * 2) & (b >> inc * 3)
+            for o in get_ones(bits):
+                if board.is_valid_index(o + x * inc) and is_continuous(o, inc, 5):
+                    ret.append(threat.Five(o, inc, o + x * inc))
+    return ret
+
+def get_fours(board, current=True):
+    '''
+    Returns four threats:
         -ooo--
         -oo-o-
         -o-oo-
         --ooo-
     '''
     b = board.get_board(current=current)
-    threes = []
+    ret = {}
     for inc in [1, board.size, board.size + 1, board.size - 1]:
         # 01: - - o o o
         # 02: - o - o o
@@ -40,48 +73,35 @@ def get_threes(board, current=True):
         # 24: o o - o -
 
         # 34: o o o - -
-        threats = set()
         for x in range(5):
             for y in range(x + 1, 5):
                 r = [z for z in range(5) if z != x and z != y]
                 bits = (b >> inc * r[0]) & (b >> inc * r[1]) & (b >> inc * r[2])
-                ones = [
-                    threats.update([o + x * inc, o + y * inc])
-                    for o in get_ones(bits)
-                    if is_continuous(o, inc, 5) and board.is_valid_index(o + x * inc) and board.is_valid_index(o + y * inc)
-                ]
-        threes.append(list(threats))
+                for o in get_ones(bits):
+                    i1 = o + x * inc
+                    i2 = o + y * inc
+                    if is_continuous(o, inc, 5) and board.is_valid_index(i1) and board.is_valid_index(i2):
+                        # check for straight fours
+                        if x == 0 and y == 1 and board.is_valid_index(o + 5 * inc):
+                            ret[i2] = threat.StraightFour(o, inc, i2, i1)
+                            continue
+                        if x == 3 and y == 4 and board.is_valid_index(o - inc):
+                            ret[i1] = threat.StraightFour(o, inc, i1, i2)
+                            continue
 
-    return threes
+                        # regular fours
+                        if i1 in ret:
+                            if ret[i1].type != ThreatType.STRAIGHT_FOUR:
+                                ret[i1].cost_squares.append(i2)
+                        else:
+                            ret[i1] = threat.Four(o, inc, i1, i2)
 
-def get_fours(board, current=True):
-    b = board.get_board(current=current)
-    fours = []
-    for inc in [1, board.size, board.size + 1, board.size - 1]:
-        shifts = [0, 1, 2, 3, 4]
-        # 0: - o o o o
-        # 1: o - o o o
-        # 2: o o - o o
-        # 3: o o o - o
-        # 4: o o o o -
-
-        threats = set()
-        for x in shifts:
-            if x == 0:
-                bits = (b >> inc) & (b >> inc * 2) & (b >> inc * 3) & (b >> inc * 4)
-            elif x == 1:
-                bits = b & (b >> inc * 2) & (b >> inc * 3) & (b >> inc * 4)
-            elif x == 2:
-                bits = b & (b >> inc * 1) & (b >> inc * 3) & (b >> inc * 4)
-            elif x == 3:
-                bits = b & (b >> inc * 1) & (b >> inc * 2) & (b >> inc * 4)
-            elif x == 4:
-                bits = b & (b >> inc * 1) & (b >> inc * 2) & (b >> inc * 3)
-
-            ones = [threats.add(o + x * inc) for o in get_ones(bits) if board.is_valid_index(o + x * inc) and is_continuous(o, inc, 5)]
-        fours.append(list(threats))
-
-    return fours
+                        if i2 in ret:
+                            if ret[i2].type != ThreatType.STRAIGHT_FOUR:
+                                ret[i2].cost_squares.append(i1)
+                        else:
+                            ret[i2] = threat.Four(o, inc, i2, i1)
+    return ret.values()
 
 def has_five(board, current=True):
     '''

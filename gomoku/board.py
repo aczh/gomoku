@@ -1,13 +1,14 @@
 import sys
 import gmpy2
+from . import utils
 
 class Board:
-    def __init__(self, size=15):
+    def __init__(self, size=15, b1=0, b2=0):
         self.size = size
         # board of player 1
-        self.b1 = 0
+        self.b1 = b1
         # board of player 2
-        self.b2 = 0
+        self.b2 = b2
         # occupied squares
         self.o = 0
         self.turns = 0
@@ -59,21 +60,13 @@ class Board:
         # update turns and moves
         self.turns += 1
 
+    def undo(self):
+        self.b1, self.b2 = self.history.pop()
+        self.o = self.b1 | self.b2
+        self.turns -= 1
+
     def print(self):
         '''Pretty prints the board.'''
-        # print('     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 ')
-        # print('     ______________________________')
-        # for r in range(self.size):
-        #     row = []
-        #     for c in range(self.size):
-        #         bit_index = r * self.size + c
-        #         if gmpy2.bit_test(self.b1, bit_index):
-        #             row.append('o')
-        #         elif gmpy2.bit_test(self.b2, bit_index):
-        #             row.append('x')
-        #         else:
-        #             row.append('-')
-        #     print(' '.join(row))
         print('     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 ')
         print('     ______________________________')
         for row in range(self.size):
@@ -86,21 +79,6 @@ class Board:
                     print('x ', end='')
                 else:
                     print('- ', end='')
-                #
-                #
-				# mbit = gmpy2.bit_test(self.mask, row * 15 + col)
-				# cbit = gmpy2.bit_test(self.cur, row * 15 + col)
-                #
-				# if cbit:
-				# 	if self.moves % 2 == 0:
-				# 		print('o ', end='')
-				# 	else:
-				# 		print('x ', end='')
-				# elif mbit:
-				# 	if self.moves % 2 == 0:
-				# 		print('x ', end='')
-				# 	else:
-				# 		print('o ', end='')
-				# else:
-				# 	print('- ', end='')
-            print()
+            print('')
+        print('==================================')
+        print(f'b1: {self.b1}, b2: {self.b2}')
