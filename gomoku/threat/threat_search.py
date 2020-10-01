@@ -19,44 +19,67 @@ def get_ones(num):
         i = one + 1
     return indices
 
-def get_fives(board, current=True):
-    '''
-    Returns five threats.
-    '''
+def get_threes(board, current=True):
     b = board.get_board(current=current)
-    ret = []
+    ret = {}
     for inc in [1, board.size, board.size + 1, board.size - 1]:
-        shifts = [0, 1, 2, 3, 4]
-        # 0: - o o o o
-        # 1: o - o o o
-        # 2: o o - o o
-        # 3: o o o - o
-        # 4: o o o o -
+        # =============
+        # - - o o o - -
+        # =============
+        # - - - o o - -
+        # - - o - o - -
+        # - - o o - - -
+        for x in range(3):
+            r = [z + 2 for z in range(3) if z != x]
+            bits = (b >> inc * r[0]) & (b >> inc * r[1])
+            e = [z for z in range(7) if z not in r]
 
-        for x in shifts:
-            if x == 0:
-                bits = (b >> inc) & (b >> inc * 2) & (b >> inc * 3) & (b >> inc * 4)
-            elif x == 1:
-                bits = b & (b >> inc * 2) & (b >> inc * 3) & (b >> inc * 4)
-            elif x == 2:
-                bits = b & (b >> inc * 1) & (b >> inc * 3) & (b >> inc * 4)
-            elif x == 3:
-                bits = b & (b >> inc * 1) & (b >> inc * 2) & (b >> inc * 4)
-            elif x == 4:
-                bits = b & (b >> inc * 1) & (b >> inc * 2) & (b >> inc * 3)
             for o in get_ones(bits):
-                if board.is_valid_index(o + x * inc) and is_continuous(o, inc, 5):
-                    ret.append(threat.Five(o, inc, o + x * inc))
-    return ret
+                if is_continuous(o, inc, 7) and all([board.is_valid_index(o + inc * i) for i in e]):
+                    gain = o + (x + 2) * inc
+                    rest = [o + (i + 2) * inc for i in range(3) if i != x]
+                    cost = [o + inc, o + inc * 5]
+                    ret[gain] = threat.Three(gain=gain, cost=cost, rest=rest)
+
+        # 12: - o o ! ? -
+        # 13: - o ! o ? -
+        # 14: - o ? ? o -
+        # 23: - ! o o ! -
+        # 24: - ? o ! o -
+        # 34: - ? ! o o -
+        lookup = {
+            (1, 2): [[ [3, 4] ], [ [4, 3] ]],
+            (1, 3): [[ [2, 4] ], [ [4, 2] ]],
+            (1, 4): [[], [ [2, 3], [3, 2] ]],
+            (2, 3): [[ [1, 4], [4, 1] ], []],
+            (2, 4): [[ [3, 1] ], [ [1, 3] ]],
+            (3, 4): [[ [2, 1] ], [ [1, 2] ]],
+        }
+        for x in range(1, 4):
+            for y in range(x + 1, 5):
+                e = [z for z in range(6) if z != x and z != y]
+                bits = (b >> inc * x) & (b >> inc * y)
+                for o in get_ones(bits):
+                    if is_continuous(o, inc, 6) and all([board.is_valid_index(o + inc * i) for i in e]):
+                        for gain, cost in lookup[(x, y)][0]:
+                            gain_index = o + gain * inc
+                            if gain_index not in ret:
+                                ret[gain_index] = threat.Three(
+                                    gain=gain_index,
+                                    cost=[o, o + inc * 5, o + inc * cost],
+                                    rest=[o + x * inc, o + y * inc],
+                                )
+                        for gain, cost in lookup[(x, y)][1]:
+                            gain_index = o + gain * inc
+                            if gain_index not in ret:
+                                ret[gain_index] = threat.BrokenThree(
+                                    gain=gain_index,
+                                    cost=[o, o + inc * 5, o + inc * cost],
+                                    rest=[o + x * inc, o + y * inc],
+                                )
+    return ret.values()
 
 def get_fours(board, current=True):
-    '''
-    Returns four threats:
-        -ooo--
-        -oo-o-
-        -o-oo-
-        --ooo-
-    '''
     b = board.get_board(current=current)
     ret = {}
     for inc in [1, board.size, board.size + 1, board.size - 1]:
@@ -102,6 +125,34 @@ def get_fours(board, current=True):
                         else:
                             ret[i2] = threat.Four(o, inc, i2, i1)
     return ret.values()
+
+def get_fives(board, current=True):
+    b = board.get_board(current=current)
+    ret = []
+    for inc in [1, board.size, board.size + 1, board.size - 1]:
+        shifts = [0, 1, 2, 3, 4]
+        # 0: - o o o o
+        # 1: o - o o o
+        # 2: o o - o o
+        # 3: o o o - o
+        # 4: o o o o -
+
+        for x in shifts:
+            if x == 0:
+                bits = (b >> inc) & (b >> inc * 2) & (b >> inc * 3) & (b >> inc * 4)
+            elif x == 1:
+                bits = b & (b >> inc * 2) & (b >> inc * 3) & (b >> inc * 4)
+            elif x == 2:
+                bits = b & (b >> inc * 1) & (b >> inc * 3) & (b >> inc * 4)
+            elif x == 3:
+                bits = b & (b >> inc * 1) & (b >> inc * 2) & (b >> inc * 4)
+            elif x == 4:
+                bits = b & (b >> inc * 1) & (b >> inc * 2) & (b >> inc * 3)
+            for o in get_ones(bits):
+                if board.is_valid_index(o + x * inc) and is_continuous(o, inc, 5):
+                    ret.append(threat.Five(o, inc, o + x * inc))
+    return ret
+
 
 def has_five(board, current=True):
     '''

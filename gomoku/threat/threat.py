@@ -3,11 +3,11 @@ from .. utils import ThreatType
 
 
 class Threat:
-    def __init__(self):
+    def __init__(self, gain=-1, cost=[], rest=[]):
         self.type = None
-        self.gain_square = -1
-        self.cost_squares = []
-        self.rest_squares = []
+        self.gain_square = gain
+        self.cost_squares = cost
+        self.rest_squares = rest
 
     def __str__(self):
         return (
@@ -16,6 +16,16 @@ class Threat:
             f'cost: {[utils.to_row(s) for s in self.cost_squares]}, '
             f'rest: {[utils.to_row(s) for s in self.rest_squares]}'
         )
+
+class BrokenThree(Threat):
+    def __init__(self, gain, cost, rest):
+        super().__init__(gain, cost, rest)
+        self.type = ThreatType.BROKEN_THREE
+
+class Three(Threat):
+    def __init__(self, gain, cost, rest):
+        super().__init__(gain, cost, rest)
+        self.type = ThreatType.THREE
 
 class Five(Threat):
     def __init__(self, initial, inc, gain):

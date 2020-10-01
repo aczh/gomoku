@@ -5,12 +5,16 @@ from . import utils
 class Board:
     def __init__(self, size=15, b1=0, b2=0):
         self.size = size
+        self.board_mask = 2 ** (self.size * self.size) - 1
         # board of player 1
         self.b1 = b1
         # board of player 2
         self.b2 = b2
         # occupied squares
-        self.o = 0
+        self.o = self.b1 | self.b2
+        # empty squares
+        self.e = self.board_mask & self.o
+
         self.turns = 0
         self.history = []
 
@@ -54,8 +58,9 @@ class Board:
         else:
             self.b2 = gmpy2.bit_flip(self.b2, r * self.size + c)
 
-        # update occupied spaces
+        # update occupied/unoccupied spaces
         self.o = self.b1 | self.b2
+        self.e = self.board_mask ^ self.o
 
         # update turns and moves
         self.turns += 1
