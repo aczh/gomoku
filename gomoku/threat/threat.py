@@ -9,12 +9,18 @@ class Threat:
         self.cost_squares = cost
         self.rest_squares = rest
 
+    def __eq__(self, other):
+        return self.gain_square == other.gain_square and self.cost_squares == other.cost_squares and self.rest_squares == other.rest_squares
+
+    def __hash__(self):
+        return hash((self.type, self.gain_square, 'cost', *self.cost_squares, 'rest', *self.rest_squares))
+
     def __str__(self):
         return (
-            f'type: {self.type}, '
-            f'gain: {utils.to_row(self.gain_square)}, '
-            f'cost: {[utils.to_row(s) for s in self.cost_squares]}, '
-            f'rest: {[utils.to_row(s) for s in self.rest_squares]}'
+            f'type: {self.type.name:<14}, '
+            f'gain: {str(utils.to_row(self.gain_square)):<10}, '
+            f'cost: {str([utils.to_row(s) for s in self.cost_squares]):<24}, '
+            f'rest: {str([utils.to_row(s) for s in self.rest_squares]):<24}'
         )
 
 class BrokenThree(Threat):

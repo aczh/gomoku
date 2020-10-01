@@ -1,28 +1,17 @@
 import gmpy2
 from . import threat
 from .. import utils
-from .. utils import ThreatType
+from .. utils import ThreatType, is_continuous, get_ones
 
-def is_continuous(start, inc, length):
-    end = start + inc * (length - 1)
-    return abs(end % 15 - start % 15) < length
 
-def get_ones(num):
-    '''Get indices of ones.'''
-    indices = []
-    i = 0
-    while num:
-        one = gmpy2.bit_scan1(num, i)
-        if one is None:
-            break
-        indices.append(one)
-        i = one + 1
-    return indices
+def get_threats(board, current=True):
+    return get_threes(board, current=current) + get_fours(board, current=current) + get_fives(board, current=current)
 
 def get_threes(board, current=True):
     b = board.get_board(current=current)
-    ret = {}
+    ret = []
     for inc in [1, board.size, board.size + 1, board.size - 1]:
+        cur = {}
         # =============
         # - - o o o - -
         # =============
@@ -39,7 +28,7 @@ def get_threes(board, current=True):
                     gain = o + (x + 2) * inc
                     rest = [o + (i + 2) * inc for i in range(3) if i != x]
                     cost = [o + inc, o + inc * 5]
-                    ret[gain] = threat.Three(gain=gain, cost=cost, rest=rest)
+                    cur[gain] = threat.Three(gain=gain, cost=cost, rest=rest)
 
         # 12: - o o ! ? -
         # 13: - o ! o ? -
@@ -63,25 +52,26 @@ def get_threes(board, current=True):
                     if is_continuous(o, inc, 6) and all([board.is_valid_index(o + inc * i) for i in e]):
                         for gain, cost in lookup[(x, y)][0]:
                             gain_index = o + gain * inc
-                            if gain_index not in ret:
-                                ret[gain_index] = threat.Three(
+                            if gain_index not in cur:
+                                cur[gain_index] = threat.Three(
                                     gain=gain_index,
                                     cost=[o, o + inc * 5, o + inc * cost],
                                     rest=[o + x * inc, o + y * inc],
                                 )
                         for gain, cost in lookup[(x, y)][1]:
                             gain_index = o + gain * inc
-                            if gain_index not in ret:
-                                ret[gain_index] = threat.BrokenThree(
+                            if gain_index not in cur:
+                                cur[gain_index] = threat.BrokenThree(
                                     gain=gain_index,
                                     cost=[o, o + inc * 5, o + inc * cost],
                                     rest=[o + x * inc, o + y * inc],
                                 )
-    return ret.values()
+        ret += cur.values()
+    return ret
 
 def get_fours(board, current=True):
     b = board.get_board(current=current)
-    ret = {}
+    ret = []
     for inc in [1, board.size, board.size + 1, board.size - 1]:
         # 01: - - o o o
         # 02: - o - o o
@@ -96,6 +86,7 @@ def get_fours(board, current=True):
         # 24: o o - o -
 
         # 34: o o o - -
+        cur = {}
         for x in range(5):
             for y in range(x + 1, 5):
                 r = [z for z in range(5) if z != x and z != y]
@@ -106,25 +97,26 @@ def get_fours(board, current=True):
                     if is_continuous(o, inc, 5) and board.is_valid_index(i1) and board.is_valid_index(i2):
                         # check for straight fours
                         if x == 0 and y == 1 and board.is_valid_index(o + 5 * inc):
-                            ret[i2] = threat.StraightFour(o, inc, i2, i1)
+                            cur[i2] = threat.StraightFour(o, inc, i2, i1)
                             continue
                         if x == 3 and y == 4 and board.is_valid_index(o - inc):
-                            ret[i1] = threat.StraightFour(o, inc, i1, i2)
+                            cur[i1] = threat.StraightFour(o, inc, i1, i2)
                             continue
 
                         # regular fours
-                        if i1 in ret:
-                            if ret[i1].type != ThreatType.STRAIGHT_FOUR:
-                                ret[i1].cost_squares.append(i2)
+                        if i1 in cur:
+                            if cur[i1].type != ThreatType.STRAIGHT_FOUR:
+                                cur[i1].cost_squares.append(i2)
                         else:
-                            ret[i1] = threat.Four(o, inc, i1, i2)
+                            cur[i1] = threat.Four(o, inc, i1, i2)
 
-                        if i2 in ret:
-                            if ret[i2].type != ThreatType.STRAIGHT_FOUR:
-                                ret[i2].cost_squares.append(i1)
+                        if i2 in cur:
+                            if cur[i2].type != ThreatType.STRAIGHT_FOUR:
+                                cur[i2].cost_squares.append(i1)
                         else:
-                            ret[i2] = threat.Four(o, inc, i2, i1)
-    return ret.values()
+                            cur[i2] = threat.Four(o, inc, i2, i1)
+        ret += cur.values()
+    return ret
 
 def get_fives(board, current=True):
     b = board.get_board(current=current)

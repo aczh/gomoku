@@ -1,5 +1,6 @@
 from . import board
 from . threat.threat_search import has_five
+from . utils import to_row
 
 class Game:
     def __init__(self, p1, p2):
@@ -9,6 +10,7 @@ class Game:
 
     def on_win(self):
         print('We have a winner!')
+        self.b.print()
 
     def on_draw(self):
         print('Drawn game!')
@@ -28,6 +30,9 @@ class Game:
                 move = self.p1.make_move(self.b)
             else:
                 move = self.p2.make_move(self.b)
+                
+            if isinstance(move, int):
+                move = to_row(move)
 
             if verbose:
                 print('\n\n====================================================================')
