@@ -92,7 +92,7 @@ def get_fours(board, current=True):
         for gain, emp, occ in lookup:
             bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2])
             for o in get_ones(bits):
-                if is_continuous(o, inc, 5) and all([board.is_valid_index(o + inc * i) for i in emp]):
+                if is_continuous(o, inc, 6) and all([board.is_valid_index(o + inc * i) for i in emp]):
                     gain_index = o + inc * emp[1]
                     cur[gain_index] = threat.StraightFour(o, inc, gain_index, o)
 
@@ -135,18 +135,6 @@ def get_fours(board, current=True):
                         cur[i1] = threat.Four(o, inc, i1, i2)
                     if i2 not in cur:
                         cur[i2] = threat.Four(o, inc, i2, i1)
-        # for x in range(5):
-        #     for y in range(x + 1, 5):
-        #         occ = [z for z in range(5) if z != x and z != y]
-        #         bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2])
-        #         for o in get_ones(bits):
-        #             i1 = o + x * inc
-        #             i2 = o + y * inc
-        #             if is_continuous(o, inc, 5) and board.is_valid_index(i1) and board.is_valid_index(i2):
-        #                 if i1 not in cur:
-        #                     cur[i1] = threat.Four(o, inc, i1, i2)
-        #                 if i2 not in cur:
-        #                     cur[i2] = threat.Four(o, inc, i2, i1)
         ret += cur.values()
     return ret
 
@@ -154,27 +142,24 @@ def get_fives(board, current=True):
     b = board.get_board(current=current)
     ret = []
     for inc in [1, board.size, board.size + 1, board.size - 1]:
-        shifts = [0, 1, 2, 3, 4]
         # 0: - o o o o
         # 1: o - o o o
         # 2: o o - o o
         # 3: o o o - o
         # 4: o o o o -
-
-        for x in shifts:
-            if x == 0:
-                bits = (b >> inc) & (b >> inc * 2) & (b >> inc * 3) & (b >> inc * 4)
-            elif x == 1:
-                bits = b & (b >> inc * 2) & (b >> inc * 3) & (b >> inc * 4)
-            elif x == 2:
-                bits = b & (b >> inc * 1) & (b >> inc * 3) & (b >> inc * 4)
-            elif x == 3:
-                bits = b & (b >> inc * 1) & (b >> inc * 2) & (b >> inc * 4)
-            elif x == 4:
-                bits = b & (b >> inc * 1) & (b >> inc * 2) & (b >> inc * 3)
+        lookup = [
+            [ 0, [1, 2, 3, 4] ],
+            [ 1, [0, 2, 3, 4] ],
+            [ 2, [0, 1, 3, 4] ],
+            [ 3, [0, 1, 2, 4] ],
+            [ 4, [0, 1, 2, 3] ],
+        ]
+        for emp, occ in lookup:
+            bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2]) & (b >> inc * occ[3])
             for o in get_ones(bits):
-                if board.is_valid_index(o + x * inc) and is_continuous(o, inc, 5):
-                    ret.append(threat.Five(o, inc, o + x * inc))
+                gain_square = o + emp * inc
+                if is_continuous(o, inc, 5) and board.is_valid_index(gain_square):
+                    ret.append(threat.Five(o, inc, gain_square))
     return ret
 
 

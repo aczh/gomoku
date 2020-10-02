@@ -8,6 +8,9 @@ import time
 VERBOSE=1
 
 class ThreatSpace:
+    def __init__(self):
+        self.winning_line = []
+
     def touching(self, b, index):
         t = 0
         dirs = [-1, 1, -b.size, b.size, -b.size + 1, b.size - 1, -b.size - 1, b.size + 1]
@@ -58,11 +61,17 @@ class ThreatSpace:
             print(f'Making forced move...: {to_row(forced)}')
             return forced
 
+        if self.winning_line:
+            if VERBOSE: print(f'Saved winning line being played: {[to_row(move) for move in self.winning_line[::-1]]}')
+            return self.winning_line.pop()
+
+
         # search for winnig line
         moves = self.search(b)
         if moves:
             if VERBOSE: print(f'Winning line being played: {[to_row(move) for move in moves]}')
-            return moves[0]
+            self.winning_line = moves[::-1]
+            return self.winning_line.pop()
 
         # search for winning line in opponent's board
         moves = self.search(b, current=False)
@@ -86,7 +95,7 @@ class ThreatSpace:
     def confirm_winning_line(self, b, moves):
         return True
 
-    def search(self, b, seen=set(), moves=[], current=True, depth=10):
+    def search(self, b, seen=set(), moves=[], current=True, depth=6):
         if depth < 0: return
 
         # only consider created threats
@@ -94,6 +103,7 @@ class ThreatSpace:
         diff = new_threats.difference(seen)
         seen = new_threats.union(seen)
 
+        # for t in seen:
         for t in diff:
             if t.type == ThreatType.FIVE or t.type == ThreatType.STRAIGHT_FOUR:
                 b.print()
@@ -108,3 +118,13 @@ class ThreatSpace:
 
             ans = self.search(_b, seen, moves=[*moves, t.gain_square], current=current, depth=depth-1)
             if ans and self.confirm_winning_line(b, moves): return ans
+
+        for t in new_threats:
+            _b = b.copy()
+            if _b.is_valid_index(t.gain_square):
+                _b.force_index(t.gain_square)
+                for cost in t.cost_squares:
+                    _b.force_index(cost, current=not current)
+
+                ans = self.search(_b, seen, moves=[*moves, t.gain_square], current=current, depth=depth-1)
+                if ans and self.confirm_winning_line(b, moves): return ans
