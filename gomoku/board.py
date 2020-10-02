@@ -12,6 +12,9 @@ class Board:
 
         self.turns = turns
 
+    def copy(self):
+        return Board(size=self.size, b1=self.b1, b2=self.b2, turns=self.turns)
+
     def moves(self, moves=[], p1=[], p2=[]):
         for move in p1:
             if not isinstance(move, int):
@@ -89,6 +92,7 @@ class Board:
 
     def print(self):
         '''Pretty prints the board.'''
+        print('')
         print('     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 ')
         print('     ______________________________')
         for row in range(self.size):

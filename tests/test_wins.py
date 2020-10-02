@@ -1,110 +1,38 @@
 from gomoku.board import Board
 from gomoku.threat.threat_search import has_five
 
-def test_h_win():
-    b = Board()
-
-    b.move(1, 0)
-    b.move(5, 11)
-
-    b.move(1, 1)
-    b.move(5, 12)
-
-    b.move(1, 2)
-    b.move(5, 13)
-
-    b.move(1, 3)
-    b.move(5, 14)
-
-    b.move(0, 14)
-    b.move(6, 0)
-
+def test_win_h():
+    b = Board(b1=507904, b2=2398508826115424282617053184, turns=10)
     assert not has_five(b)
     assert not has_five(b, current=False)
 
-    b.move(1, 4)
-    b.move(5, 10)
-
+    b = Board(b1=1032192, b2=2437194452343092416207650816, turns=12)
     assert has_five(b)
     assert has_five(b, current=False)
 
-def test_v_win():
-    b = Board()
-
-    b.move(0, 0)
-    b.move(14, 14)
-
-    b.move(1, 0)
-    b.move(13, 14)
-
-    b.move(2, 0)
-    b.move(12, 14)
-
-    b.move(3, 0)
-    b.move(11, 14)
-
-    b.move(14, 0)
-    b.move(0, 14)
-
+def test_win_v():
+    b = Board(b1=1645504557321206042154969182557350504982735865633615048794472449, b2=26960769444538473587005248571383246215233876609474620418452514422784, turns=10)
     assert not has_five(b)
     assert not has_five(b, current=False)
 
-    b.move(4, 0)
-    b.move(10, 14)
-
+    b = Board(b1=1645504557321206042154969182557350504982735866786536553401319425, b2=26960769444538473610389274768677692906492833932935148732947435110400, turns=12)
     assert has_five(b)
     assert has_five(b, current=False)
 
-def test_d1_win():
-    b = Board()
-
-    b.move(1, 11)
-    b.move(11, 1)
-
-    b.move(2, 12)
-    b.move(12, 2)
-
-    b.move(3, 13)
-    b.move(13, 3)
-
-    b.move(4, 14)
-    b.move(10, 0)
-
-    b.move(5, 0)
-    b.move(8, 14)
-
+def test_win_d1():
+    b = Board(b1=56668686029210007896064, b2=401740641140448564499572520681256201108752761030936174264320, turns=10)
     assert not has_five(b)
     assert not has_five(b, current=False)
 
-    b.move(0, 10)
-    b.move(14, 4)
-
+    b = Board(b1=56668686029210007897088, b2=26328474657780437123044006493438289335924882602898308749752008704, turns=12)
     assert has_five(b)
     assert has_five(b, current=False)
 
-def test_d2_win():
-    b = Board()
-
-    b.move(1, 3)
-    b.move(13, 11)
-
-    b.move(2, 2)
-    b.move(12, 12)
-
-    b.move(3, 1)
-    b.move(11, 13)
-
-    b.move(4, 0)
-    b.move(10, 14)
-
-    b.move(4, 14)
-    b.move(10, 0)
-
+def test_win_d2():
+    b = Board(b1=18890618923356227108864, b2=102850312317458034985366611441495511031023819840037617343135744, turns=10)
     assert not has_five(b)
     assert not has_five(b, current=False)
 
-    b.move(0, 4)
-    b.move(14, 10)
-
+    b = Board(b1=18890618923356227108880, b2=1685099517009232445201673809550168412613352550228625817686318776320, turns=12)
     assert has_five(b)
     assert has_five(b, current=False)

@@ -1,11 +1,12 @@
 import gmpy2
 from . import threat
 from .. import utils
-from .. utils import ThreatType, is_continuous, get_ones
-
+from .. utils import ThreatType, is_continuous, get_ones, to_row
+from collections import defaultdict
 
 def get_threats(board, current=True):
-    return get_threes(board, current=current) + get_fours(board, current=current) + get_fives(board, current=current)
+    threats = get_fives(board, current=current) +  get_fours(board, current=current) + get_threes(board, current=current)
+    return threats
 
 def get_threes(board, current=True):
     b = board.get_board(current=current)
@@ -69,10 +70,35 @@ def get_threes(board, current=True):
         ret += cur.values()
     return ret
 
+
 def get_fours(board, current=True):
     b = board.get_board(current=current)
     ret = []
     for inc in [1, board.size, board.size + 1, board.size - 1]:
+        ################
+        # STRAIGHT FOURS
+        ################
+        # - ! o o o -
+        # - o ! o o -
+        # - o o ! o -
+        # - o o o ! -
+        lookup = [
+            [ 1, [0, 1, 5], [2, 3, 4] ],
+            [ 2, [0, 2, 5], [1, 3, 4] ],
+            [ 3, [0, 3, 5], [1, 2, 4] ],
+            [ 4, [0, 4, 5], [1, 2, 3] ],
+        ]
+        cur = {}
+        for gain, emp, occ in lookup:
+            bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2])
+            for o in get_ones(bits):
+                if is_continuous(o, inc, 5) and all([board.is_valid_index(o + inc * i) for i in emp]):
+                    gain_index = o + inc * emp[1]
+                    cur[gain_index] = threat.StraightFour(o, inc, gain_index, o)
+
+        ################
+        # FOURS
+        ################
         # 01: - - o o o
         # 02: - o - o o
         # 03: - o o - o
@@ -86,35 +112,41 @@ def get_fours(board, current=True):
         # 24: o o - o -
 
         # 34: o o o - -
-        cur = {}
-        for x in range(5):
-            for y in range(x + 1, 5):
-                r = [z for z in range(5) if z != x and z != y]
-                bits = (b >> inc * r[0]) & (b >> inc * r[1]) & (b >> inc * r[2])
-                for o in get_ones(bits):
-                    i1 = o + x * inc
-                    i2 = o + y * inc
-                    if is_continuous(o, inc, 5) and board.is_valid_index(i1) and board.is_valid_index(i2):
-                        # check for straight fours
-                        if x == 0 and y == 1 and board.is_valid_index(o + 5 * inc):
-                            cur[i2] = threat.StraightFour(o, inc, i2, i1)
-                            continue
-                        if x == 3 and y == 4 and board.is_valid_index(o - inc):
-                            cur[i1] = threat.StraightFour(o, inc, i1, i2)
-                            continue
+        lookup = [
+            [ [0, 1], [2, 3, 4] ],
+            [ [0, 2], [1, 3, 4] ],
+            [ [0, 3], [1, 2, 4] ],
+            [ [0, 4], [1, 2, 3] ],
+            [ [1, 2], [0, 3, 4] ],
+            [ [1, 3], [0, 2, 4] ],
+            [ [1, 4], [0, 2, 3] ],
+            [ [2, 3], [0, 1, 4] ],
+            [ [2, 4], [0, 1, 3] ],
+            [ [3, 4], [0, 1, 2] ],
+        ]
 
-                        # regular fours
-                        if i1 in cur:
-                            if cur[i1].type != ThreatType.STRAIGHT_FOUR:
-                                cur[i1].cost_squares.append(i2)
-                        else:
-                            cur[i1] = threat.Four(o, inc, i1, i2)
-
-                        if i2 in cur:
-                            if cur[i2].type != ThreatType.STRAIGHT_FOUR:
-                                cur[i2].cost_squares.append(i1)
-                        else:
-                            cur[i2] = threat.Four(o, inc, i2, i1)
+        for emp, occ in lookup:
+            bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2])
+            for o in get_ones(bits):
+                if is_continuous(o, inc, 5) and all([board.is_valid_index(o + inc * i) for i in emp]):
+                    i1 = o + emp[0] * inc
+                    i2 = o + emp[1] * inc
+                    if i1 not in cur:
+                        cur[i1] = threat.Four(o, inc, i1, i2)
+                    if i2 not in cur:
+                        cur[i2] = threat.Four(o, inc, i2, i1)
+        # for x in range(5):
+        #     for y in range(x + 1, 5):
+        #         occ = [z for z in range(5) if z != x and z != y]
+        #         bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2])
+        #         for o in get_ones(bits):
+        #             i1 = o + x * inc
+        #             i2 = o + y * inc
+        #             if is_continuous(o, inc, 5) and board.is_valid_index(i1) and board.is_valid_index(i2):
+        #                 if i1 not in cur:
+        #                     cur[i1] = threat.Four(o, inc, i1, i2)
+        #                 if i2 not in cur:
+        #                     cur[i2] = threat.Four(o, inc, i2, i1)
         ret += cur.values()
     return ret
 

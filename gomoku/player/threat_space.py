@@ -3,56 +3,108 @@ from .. threat.threat import Three
 from .. utils import to_row, ThreatType
 from .. board import Board
 import random
+import time
 
 VERBOSE=1
 
 class ThreatSpace:
-    def __init__(self):
-        self.execs = 0
+    def touching(self, b, index):
+        t = 0
+        dirs = [-1, 1, -b.size, b.size, -b.size + 1, b.size - 1, -b.size - 1, b.size + 1]
+        for d in dirs:
+            if 0 <= index + d < 225 and not b.is_valid_index(index + d):
+                t += 1
+        return t
+
+    def score_moves(self, b):
+        scored_moves = []
+        for move in self.valid_moves(b):
+            _b = b.copy()
+            _b.force_index(move)
+            score = len(get_threes(_b)) * 5 + len(get_threes(_b, current=False)) * 3
+            score += self.touching(b, move)
+            scored_moves.append((score, move))
+
+        scored_moves.sort(reverse=True)
+        return scored_moves
+
+    def forced_moves(self, b):
+        # make 5
+        forced = get_fives(b)
+        if forced: return forced[0].gain_square
+
+        # block 5
+        forced = get_fives(b, current=False)
+        if forced: return forced[0].gain_square
+
+        # make straight 4
+        forced = [t for t in get_fours(b) if t.type == ThreatType.STRAIGHT_FOUR]
+        if forced: return forced[0].gain_square
+
+        # block straight 4
+        forced = [t for t in get_fours(b, current=False) if t.type == ThreatType.STRAIGHT_FOUR]
+        if forced: return forced[0].gain_square
+
+        return None
+
+    def valid_moves(self, b):
+        return [i for i in range(225) if b.is_valid_index(i)]
 
     def make_move(self, b):
-        print("-----------------------------------------------------------------------------------------")
-        b.print()
+        if b.turns == 0: return (7, 7)
 
-        self.execs = 0
+        forced = self.forced_moves(b)
+        if forced:
+            print(f'Making forced move...: {to_row(forced)}')
+            return forced
+
+        # search for winnig line
         moves = self.search(b)
-        print(f'executed {self.execs} times')
         if moves:
             if VERBOSE: print(f'Winning line being played: {[to_row(move) for move in moves]}')
             return moves[0]
 
-        self.execs = 0
+        # search for winning line in opponent's board
         moves = self.search(b, current=False)
-        print(f'executed {self.execs} times')
         if moves:
             if VERBOSE: print(f'Winning line being blocked: {[to_row(move) for move in moves]}')
             return moves[0]
 
+        # make a move based on simple heuristic
+        best_moves = [tup[1] for tup in self.score_moves(b)[:10]]
+        for move in best_moves:
+            _b = b.copy()
+            _b.force_index(move)
+            moves = self.search(_b)
+            if moves:
+                if VERBOSE: print(f'Threatening line being played: {[to_row(move) for move in moves]}')
+                return moves[0]
 
         print('Random move...')
-        return random.choice(self.valid_moves(b))
+        return random.choice(best_moves)
 
-    def search(self, b, seen=set(), moves=[], current=True):
-        self.execs += 1
+    def confirm_winning_line(self, b, moves):
+        return True
+
+    def search(self, b, seen=set(), moves=[], current=True, depth=10):
+        if depth < 0: return
+
+        # only consider created threats
         new_threats = set(get_threats(b, current=current))
         diff = new_threats.difference(seen)
         seen = new_threats.union(seen)
 
         for t in diff:
-            if t.type == ThreatType.FIVE or t.type == ThreatType.STRAIGHT_FOUR: return [*moves, t.gain_square]
+            if t.type == ThreatType.FIVE or t.type == ThreatType.STRAIGHT_FOUR:
+                b.print()
+                return [*moves, t.gain_square]
 
-            _b = Board(b1=b.b1, b2=b.b2, turns=b.turns)
+            # play the threat
+            # play all possible counter moves to the threat
+            _b = b.copy()
             _b.force_index(t.gain_square, current=current)
             for cost in t.cost_squares:
                 _b.force_index(cost, current=not current)
 
-            ans = self.search(_b, seen, moves=[*moves, t.gain_square], current=current)
-            if ans: return ans
-
-    def valid_moves(self, b):
-        moves = [
-            (r, c)
-            for r in range(b.size) for c in range(b.size)
-            if b.is_valid_move(r, c)
-        ]
-        return moves
+            ans = self.search(_b, seen, moves=[*moves, t.gain_square], current=current, depth=depth-1)
+            if ans and self.confirm_winning_line(b, moves): return ans

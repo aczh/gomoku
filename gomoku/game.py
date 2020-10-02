@@ -30,7 +30,7 @@ class Game:
                 move = self.p1.make_move(self.b)
             else:
                 move = self.p2.make_move(self.b)
-                
+
             if isinstance(move, int):
                 move = to_row(move)
 
