@@ -17,3 +17,14 @@ def test_valid_moves():
     assert b.is_valid_move(14, 14)
     b.move(14, 14)
     assert not b.is_valid_move(14, 14)
+
+def test_move():
+    b = Board()
+    b.force_index(0)
+    assert b.b1 == 1
+    assert b.b2 == 0
+
+    b = Board()
+    b.force_index(0, current=False)
+    assert b.b2 == 1
+    assert b.b1 == 0

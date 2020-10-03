@@ -70,7 +70,6 @@ def get_threes(board, current=True):
         ret += cur.values()
     return ret
 
-
 def get_fours(board, current=True):
     b = board.get_board(current=current)
     ret = []
@@ -168,9 +167,16 @@ def has_five(board, current=True):
     Returns True if current player has a 5 in a row.
     ooooo
     '''
-    b = board.get_board(current=current)
 
-    for inc in [1, board.size, board.size + 1, board.size - 1]:
+    boards = board.get_boards(current=current)
+    for b in boards:
+        bits = b & (b >> board.size) & (b >> board.size * 2) & (b >> board.size * 3) & (b >> board.size * 4)
+        threats = [o for o in get_ones(bits)]
+        if threats: return True
+
+    b = board.get_board(current=current)
+    for inc in [board.size + 1, board.size - 1]:
+    # for inc in [1, board.size, board.size + 1, board.size - 1]:
         bits = b & (b >> inc) & (b >> inc * 2) & (b >> inc * 3) & (b >> inc * 4)
         threats = [o for o in get_ones(bits) if is_continuous(o, inc, 5)]
         if threats:

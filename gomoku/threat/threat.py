@@ -17,10 +17,10 @@ class Threat:
 
     def __str__(self):
         return (
-            f'type: {self.type.name:<14}, '
-            f'gain: {str(utils.to_row(self.gain_square)):<10}, '
-            f'cost: {str([utils.to_row(s) for s in self.cost_squares]):<24}, '
-            f'rest: {str([utils.to_row(s) for s in self.rest_squares]):<24}'
+            f'type: {self.type.name:<14}'
+            f'gain: {str(utils.to_row(self.gain_square)):<10}'
+            f'cost: {str([utils.to_row(s) for s in self.cost_squares]):<30}'
+            f'rest: {str([utils.to_row(s) for s in self.rest_squares]):<30}'
         )
 
 class BrokenThree(Threat):
