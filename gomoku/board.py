@@ -7,10 +7,12 @@ class Board:
         self.size = size
         self.turns = turns
 
+        self.mask = 53919893334301279589334030174039261347274288845081144962207220498431
+
         self.b1 = b1
         self.b2 = b2
         self.o = self.b1 | self.b2
-        self.e = self.o ^ 53919893334301279589334030174039261347274288845081144962207220498431
+        self.e = self.o ^ self.mask
 
     def copy(self):
         return Board(size=self.size, b1=self.b1, b2=self.b2, turns=self.turns)

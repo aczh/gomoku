@@ -29,6 +29,7 @@ def test_straight_fours_d1():
 
 def test_straight_fours_d2():
     b = Board(b1=324538361983543588175592382595076, b2=6740398071174139633051988437119323087006219085847281297982551490560, turns=18)
+    print(b)
     assert set([34, 66, 122]) == set([t.gain_square for t in get_straight_fours(b)])
     assert set([48, 62, 76, 80, 94, 108]) == set([rs for t in get_straight_fours(b) for rs in t.rest_squares])
 

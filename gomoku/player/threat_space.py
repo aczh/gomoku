@@ -52,7 +52,7 @@ class ThreatSpace:
 
         forced = self.forced_moves(b)
         if forced:
-            print(f'Making forced move...: {to_row(forced)}')
+            if VERBOSE: print(f'Making forced move...: {to_row(forced)}')
             self.winning_line = []
             return forced
 
@@ -61,19 +61,19 @@ class ThreatSpace:
             return self.winning_line.pop().gain_square
 
         # search for winning line
-        moves = threat_space_search(b)
+        moves = threat_space_search(b, VERBOSE=VERBOSE)
         if moves:
             if VERBOSE: print(f'Winning line being played: {[to_row(t.gain_square) for t in moves[0]]}')
             self.winning_line = moves[0][::-1]
             return self.winning_line.pop().gain_square
 
         # # search for winning line in opponent's board
-        moves = threat_space_search(b, current=False, max_seqs=5)
+        moves = threat_space_search(b, current=False, max_seqs=5, VERBOSE=VERBOSE)
         limit_moves = None
         if moves:
             for seq in moves:
                 workable_moves = set()
-                print(f'Enemy winning seq------------')
+                if VERBOSE: print(f'Enemy winning seq------------')
                 for t in seq:
                     workable_moves.add(t.gain_square)
                     if t.type == ThreatType.STRAIGHT_FOUR:
@@ -83,14 +83,14 @@ class ThreatSpace:
                     else:
                         workable_moves.update(t.cost_squares)
 
-                    print(str(t))
+                    if VERBOSE: print(str(t))
 
                 if limit_moves is None:
                     limit_moves = workable_moves
                 else:
                     limit_moves = limit_moves & workable_moves
 
-            print(f'Moves limited to: {[to_row(move) for move in limit_moves]}')
+            if VERBOSE: print(f'Moves limited to: {[to_row(move) for move in limit_moves]}')
 
         # make a move based on simple heuristic
         score_moves = self.score_moves(b, limit_moves=limit_moves)
@@ -99,22 +99,17 @@ class ThreatSpace:
         for move in best_moves:
             _b = b.copy()
             _b.force_index(move)
-            tss = threat_space_search(_b)
+            tss = threat_space_search(_b, VERBOSE=VERBOSE)
             if tss:
                 moves = [move]
                 [moves.append(t.gain_square) for t in tss[0]]
                 if VERBOSE: print(f'Threatening line: {[to_row(t) for t in moves]}')
                 for move in moves:
                     threatening_moves[move] += 1
-                    # threatening_moves[move]
-                # threatening_moves.append(move)
         if threatening_moves:
-            hmm = [(v, k) for k, v in threatening_moves.items() if k in best_moves]
-            hmm.sort(reverse=True)
-            print(hmm)
-            return hmm[0][1]
-            # print(threatening_moves)
-            # return random.choice(threatening_moves)
-
-        print('Random move...')
+            best_threatening = [(v, k) for k, v in threatening_moves.items() if k in best_moves]
+            best_threatening.sort(reverse=True)
+            if VERBOSE: print(f'Threatening line: {best_threatening}')
+            return best_threatening[0][1]
+        if VERBOSE: print('Random move...')
         return random.choice(best_moves[:3])

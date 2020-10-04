@@ -1,8 +1,8 @@
 import gmpy2
-
 from . import threat
 from .. import utils
-from .. utils import ThreatType, is_continuous, get_ones, to_row
+from .. utils import ThreatType, get_ones, to_row
+from . threat_masks import threat_mask
 
 def get_threats(board, current=True):
     threats = get_fives(board, current=current) +  get_fours(board, current=current) + get_threes(board, current=current)
@@ -37,40 +37,46 @@ def get_threes(board, current=True):
         for x in range(3):
             r = [z + 2 for z in range(3) if z != x]
             emp = [z for z in range(7) if z not in r]
-            bits = (b >> inc * r[0]) & (b >> inc * r[1])
+
             e_bits = (board.e >> inc * emp[0]) & (board.e >> inc * emp[1]) & (board.e >> inc * emp[2]) & (board.e >> inc * emp[3]) & (board.e >> inc * emp[4])
 
+            bits = (b >> inc * r[0]) & (b >> inc * r[1])
+            bits = bits & threat_mask[7][inc]
+            bits = bits & e_bits
+
             for o in get_ones(bits):
-                if is_continuous(o, inc, 7) and gmpy2.bit_test(e_bits, o):
-                    gain = o + (x + 2) * inc
-                    rest = [o + (i + 2) * inc for i in range(3) if i != x]
-                    cost = [o + inc, o + inc * 5]
-                    cur[gain] = threat.Three(gain=gain, cost=cost, rest=rest)
+                gain = o + (x + 2) * inc
+                rest = [o + (i + 2) * inc for i in range(3) if i != x]
+                cost = [o + inc, o + inc * 5]
+                cur[gain] = threat.Three(gain=gain, cost=cost, rest=rest)
 
         for x in range(1, 4):
             for y in range(x + 1, 5):
                 emp = [z for z in range(6) if z != x and z != y]
-                bits = (b >> inc * x) & (b >> inc * y)
+
                 e_bits = (board.e >> inc * emp[0]) & (board.e >> inc * emp[1]) & (board.e >> inc * emp[2]) & (board.e >> inc * emp[3])
 
+                bits = (b >> inc * x) & (b >> inc * y)
+                bits = bits & threat_mask[6][inc]
+                bits = bits & e_bits
+
                 for o in get_ones(bits):
-                    if is_continuous(o, inc, 6) and gmpy2.bit_test(e_bits, o):
-                        for gain, cost in lookup[(x, y)][0]:
-                            gain_index = o + gain * inc
-                            if gain_index not in cur:
-                                cur[gain_index] = threat.Three(
-                                    gain=gain_index,
-                                    cost=[o, o + inc * 5, o + inc * cost],
-                                    rest=[o + x * inc, o + y * inc],
-                                )
-                        for gain, cost in lookup[(x, y)][1]:
-                            gain_index = o + gain * inc
-                            if gain_index not in cur:
-                                cur[gain_index] = threat.BrokenThree(
-                                    gain=gain_index,
-                                    cost=[o, o + inc * 5, o + inc * cost],
-                                    rest=[o + x * inc, o + y * inc],
-                                )
+                    for gain, cost in lookup[(x, y)][0]:
+                        gain_index = o + gain * inc
+                        if gain_index not in cur:
+                            cur[gain_index] = threat.Three(
+                                gain=gain_index,
+                                cost=[o, o + inc * 5, o + inc * cost],
+                                rest=[o + x * inc, o + y * inc],
+                            )
+                    for gain, cost in lookup[(x, y)][1]:
+                        gain_index = o + gain * inc
+                        if gain_index not in cur:
+                            cur[gain_index] = threat.BrokenThree(
+                                gain=gain_index,
+                                cost=[o, o + inc * 5, o + inc * cost],
+                                rest=[o + x * inc, o + y * inc],
+                            )
         ret += cur.values()
     return ret
 
@@ -93,18 +99,21 @@ def get_straight_fours(board, current=True):
 
     for inc in [1, board.size, board.size + 1, board.size - 1]:
         for emp, occ in straight_four_lookup:
-            bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2])
             e_bits = (board.e >> inc * emp[0]) & (board.e >> inc * emp[1]) & (board.e >> inc * emp[2])
 
+            bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2])
+            bits = bits & threat_mask[6][inc]
+            bits = bits & e_bits
+
             for o in get_ones(bits):
-                if is_continuous(o, inc, 6) and gmpy2.bit_test(e_bits, o):
-                    gain_index = o + inc * emp[1]
-                    ret.append(threat.StraightFour(o, inc, o + inc * emp[1], o))
+                gain_index = o + inc * emp[1]
+                ret.append(threat.StraightFour(o, inc, o + inc * emp[1], o))
     return ret
 
 def get_fours(board, current=True):
     b = board.get_board(current=current)
     ret = []
+
     ################
     # STRAIGHT FOURS
     ################
@@ -151,24 +160,30 @@ def get_fours(board, current=True):
     for inc in [1, board.size, board.size + 1, board.size - 1]:
         cur = {}
         for gain, emp, occ in straight_four_lookup:
+            e_bits = (board.e >> inc * emp[0]) & (board.e >> inc * emp[1]) & (board.e >> inc * emp[2])\
+
             bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2])
-            e_bits = (board.e >> inc * emp[0]) & (board.e >> inc * emp[1]) & (board.e >> inc * emp[2])
+            bits = bits & threat_mask[6][inc]
+            bits = bits & e_bits
 
             for o in get_ones(bits):
-                if is_continuous(o, inc, 6) and gmpy2.bit_test(e_bits, o):
-                    gain_index = o + inc * emp[1]
-                    cur[gain_index] = threat.StraightFour(o, inc, gain_index, o)
+                gain_index = o + inc * emp[1]
+                cur[gain_index] = threat.StraightFour(o, inc, gain_index, o)
+
         for emp, occ in four_lookup:
-            bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2])
             e_bits = (board.e >> inc * emp[0]) & (board.e >> inc * emp[1])
+
+            bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2])
+            bits = bits & threat_mask[5][inc]
+            bits = bits & e_bits
+
             for o in get_ones(bits):
-                if is_continuous(o, inc, 5) and gmpy2.bit_test(e_bits, o):
-                    i1 = o + emp[0] * inc
-                    i2 = o + emp[1] * inc
-                    if i1 not in cur:
-                        cur[i1] = threat.Four(o, inc, i1, i2)
-                    if i2 not in cur:
-                        cur[i2] = threat.Four(o, inc, i2, i1)
+                i1 = o + emp[0] * inc
+                i2 = o + emp[1] * inc
+                if i1 not in cur:
+                    cur[i1] = threat.Four(o, inc, i1, i2)
+                if i2 not in cur:
+                    cur[i2] = threat.Four(o, inc, i2, i1)
         ret += cur.values()
     return ret
 
@@ -189,14 +204,12 @@ def get_fives(board, current=True):
     ]
 
     ret = []
-
     for inc in [1, board.size, board.size + 1, board.size - 1]:
         for emp, occ in lookup:
-            bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2]) & (b >> inc * occ[3])
-
+            bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2]) & (b >> inc * occ[3]) & threat_mask[5][inc]
             for o in get_ones(bits):
                 gain_square = o + emp * inc
-                if is_continuous(o, inc, 5) and board.is_valid_index(gain_square):
+                if board.is_valid_index(gain_square):
                     ret.append(threat.Five(o, inc, gain_square))
     return ret
 
@@ -209,7 +222,6 @@ def has_five(board, current=True):
     b = board.get_board(current=current)
     for inc in [1, board.size, board.size + 1, board.size - 1]:
         bits = b & (b >> inc) & (b >> inc * 2) & (b >> inc * 3) & (b >> inc * 4)
-        threats = [o for o in get_ones(bits) if is_continuous(o, inc, 5)]
-        if threats:
-            return True
+        bits = bits & threat_mask[5][inc]
+        if bits: return True
     return False
