@@ -5,29 +5,12 @@ from . import utils
 class Board:
     def __init__(self, size=15, b1=0, b2=0, turns=0):
         self.size = size
+        self.turns = turns
 
         self.b1 = b1
         self.b2 = b2
-
-        self.b1_h = 0
-        self.b2_h = 0
-
-        self.b1_d1 = 0
-        self.b2_d1 = 0
-
-        self.b1_d2 = 0
-        self.b2_d2 = 0
-
-        self.turns = 0
-        for i in range(225):
-            if gmpy2.bit_test(self.b1, i):
-                self.force_index(i)
-            if gmpy2.bit_test(self.b2, i):
-                self.force_index(i, current=False)
-
-        self.turns = turns
-
-
+        self.o = self.b1 | self.b2
+        self.e = self.o ^ 53919893334301279589334030174039261347274288845081144962207220498431
 
     def copy(self):
         return Board(size=self.size, b1=self.b1, b2=self.b2, turns=self.turns)
@@ -50,59 +33,37 @@ class Board:
         '''
         Returns board of current player if current is set to True.
         '''
-        if self.turns % 2 == 0:
-            return self.b1 if current else self.b2
-        return self.b2 if current else self.b1
-
-    def get_boards(self, current=True):
-        if self.turns % 2 == 0 and current:
-            return [self.b1_h, self.b1]
-            # return [self.b1_h, self.b1, self.b1_d1, self.b1_d2]
-        return [self.b2_h, self.b2]
-        # return [self.b2_h, self.b2, self.b2_d1, self.b2_d2]
-
+        if self.turns % 2 == 0 ^ current:
+            return self.b2
+        return self.b1
 
     #####################
     # FORCE MOVE
     #####################
     def force_index(self, index, current=True):
-        index_h = index // self.size + (index % self.size) * self.size
-        index_d1 = ((index // self.size - index % self.size) * self.size + index % self.size + 225) % 225
-        index_d2 = ((index // self.size + index % self.size) % self.size) * self.size + index % self.size
-
-        if self.turns % 2 == 0 and current:
-            self.b1 = gmpy2.bit_set(self.b1, index)
-            self.b1_h = gmpy2.bit_set(self.b1_h, index_h)
-            self.b1_d1 = gmpy2.bit_set(self.b1_d1, index_d1)
-            self.b1_d2 = gmpy2.bit_set(self.b1_d2, index_d2)
-        else:
+        if self.turns % 2 == 0 ^ current:
             self.b2 = gmpy2.bit_set(self.b2, index)
-            self.b2_h = gmpy2.bit_set(self.b2_h, index_h)
-            self.b2_d1 = gmpy2.bit_set(self.b2_d1, index_d1)
-            self.b2_d2 = gmpy2.bit_set(self.b2_d2, index_d2)
+        else:
+            self.b1 = gmpy2.bit_set(self.b1, index)
+
+        self.o = gmpy2.bit_set(self.o, index)
+        self.e = gmpy2.bit_clear(self.e, index)
 
     def force_move(self, r, c, current=True):
-        self.force_index(r * self.size + c, current=True)
+        self.force_index(r * self.size + c, current=current)
 
     #####################
     # MOVE
     #####################
     def is_valid_index(self, index):
-        return self.is_valid_move(index // self.size, index % self.size)
+        return 0 <= index < self.size * self.size and not gmpy2.bit_test(self.e, index)
 
     def is_valid_move(self, r, c):
-        '''
-        Returns True if r, c fall within size constraints and the space is unoccupied.
-        '''
-        return c >= 0 and r >= 0 and r < self.size and c < self.size and not gmpy2.bit_test(self.b1 | self.b2, r * self.size + c)
+        return c >= 0 and r >= 0 and r < self.size and c < self.size and gmpy2.bit_test(self.e, r * self.size + c)
 
     def move_index(self, index):
         if not self.is_valid_index(index): raise Exception(f'Invalid index: {index}')
-
-        # update player boards
         self.force_index(index)
-
-        # update turns and moves
         self.turns += 1
 
     def move(self, r, c):
@@ -112,22 +73,20 @@ class Board:
     # VALID
     #####################
     def is_valid_index(self, index):
-        return self.is_valid_move(index // self.size, index % self.size)
+        return 0 <= index < self.size * self.size and gmpy2.bit_test(self.e, index)
 
     def is_valid_move(self, r, c):
-        '''
-        Returns True if r, c fall within size constraints and the space is unoccupied.
-        '''
-        return c >= 0 and r >= 0 and r < self.size and c < self.size and not gmpy2.bit_test(self.b1 | self.b2, r * self.size + c)
+        return c >= 0 and r >= 0 and r < self.size and c < self.size and gmpy2.bit_test(self.e, r * self.size + c)
+
+    def __repr__(self):
+        return f'b1={self.b1}, b2={self.b2}, turns={self.turns}'
 
     def __str__(self):
         s = []
         s.append('===================================')
-        # s.append('    a b c d e f g h i j k l m n o ')
         s.append('    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 ')
         s.append('    ______________________________')
         for row in range(self.size):
-            # r = f'{15-row:>2} |'
             r = f'{row:>2} |'
             for col in range(self.size):
                 bit_index = row * 15 + col
