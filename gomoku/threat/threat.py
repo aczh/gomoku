@@ -53,3 +53,5 @@ class StraightFour(Four):
     def __init__(self, initial, inc, gain, cost):
         super().__init__(initial, inc, gain, cost)
         self.type = ThreatType.STRAIGHT_FOUR
+
+    # def get_defensive_moves(self):

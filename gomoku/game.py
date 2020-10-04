@@ -16,11 +16,11 @@ class Game:
         print('Drawn game!')
 
     def play(self, verbose=1):
-        while not has_five(self.b) and not has_five(self.b, current=False):
-            print('\n\n-------------------------------------------')
-            print('Player {}\'s turn to move.'.format(self.b.turns % 2 + 1))
-            print(self.b)
+        print('\n====================================================================')
+        print('Player {}\'s turn to move.'.format(self.b.turns % 2 + 1))
+        print(self.b)
 
+        while not has_five(self.b) and not has_five(self.b, current=False):
             if self.b.turns == self.b.size * self.b.size:
                 self.on_draw(self)
                 break
@@ -33,11 +33,12 @@ class Game:
             if isinstance(move, int):
                 move = to_row(move)
 
+
+            self.b.move(*move)
             if verbose:
                 print('\n====================================================================')
                 print('Player {} placed their piece at: {}, {}'.format(self.b.turns % 2 + 1, *move))
-                print('====================================================================')
-
-            self.b.move(*move)
+                print('Player {}\'s turn to move.'.format(self.b.turns % 2 + 1))
+                print(self.b)
 
         self.on_win()

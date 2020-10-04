@@ -1,4 +1,4 @@
-from .. threat.threat_search import get_fives, get_fours, get_threes, get_threats, has_five
+from .. threat.threat_search import get_fives, get_fours, get_threes, get_threats, has_five, get_straight_fours
 from .. threat.threat import Three
 from .. utils import to_row, ThreatType
 from .. board import Board
@@ -14,8 +14,7 @@ def confirm_winning_line(b, threats):
     b.move_index(t.gain_square)
 
     if not get_fives(b, current=False):
-        straight_fours = [sf for sf in get_fours(b) if sf.type == ThreatType.STRAIGHT_FOUR and sf.gain_square != t.gain_square]
-        if straight_fours: return False
+        if [sf for sf in get_straight_fours(b) if sf.gain_square != t.gain_square]: return False
 
     for cs in t.cost_squares:
         _b = b.copy()
@@ -23,12 +22,13 @@ def confirm_winning_line(b, threats):
         if not confirm_winning_line(_b, threats[1:]): return False
     return True
 
-def threat_space_search(b, moves=[], current=True, depth=10):
+def threat_space_search(b, moves=[], current=True, depth=5, max_seqs=1):
     nodes = 0
     execs = 0
     original = b.copy()
+    seqs = []
     def _search(b, moves=[], current=True, depth=50):
-        if depth <= 0: return []
+        if depth <= 0: return
 
         # get threats
         threats = get_threats(b, current=current)
@@ -41,14 +41,16 @@ def threat_space_search(b, moves=[], current=True, depth=10):
         execs += 1
 
         if has_five(b):
-            if confirm_winning_line(original.copy(), [*moves]):
-                return [*moves]
+            if confirm_winning_line(original.copy(), moves):
+                seqs.append(moves)
+                return
 
         # return if winning threat in threats
         for t in threats:
             if t.type == ThreatType.FIVE or t.type == ThreatType.STRAIGHT_FOUR:
                 if confirm_winning_line(original.copy(), [*moves, t]):
-                    return [*moves, t]
+                    seqs.append([*moves, t])
+                    return
 
         # search all dependent threats
         if len(moves) > 0:
@@ -61,8 +63,9 @@ def threat_space_search(b, moves=[], current=True, depth=10):
             _b.force_index(t.gain_square, current=current)
             [_b.force_index(cost, current=not current) for cost in t.cost_squares]
 
-            ans = _search(_b, moves=[*moves, t], current=current, depth=depth-1)
-            if ans: return ans
+            _search(_b, moves=[*moves, t], current=current, depth=depth-1)
+            if len(seqs) >= max_seqs: return
+
 
         # search all independent threats
         inline = set([1, 2, 15, 30, 16, 32, 14, 28])
@@ -78,12 +81,11 @@ def threat_space_search(b, moves=[], current=True, depth=10):
                     _b.force_index(u.gain_square, current=current)
                     [_b.force_index(cost, current=not current) for cost in u.cost_squares]
 
-                    ans = _search(_b, moves=[*moves, t, u], current=current, depth=depth-2)
-                    if ans: return ans
-        return []
+                    _search(_b, moves=[*moves, t, u], current=current, depth=depth-2)
+                    if len(seqs) >= max_seqs: return
 
     s = time.time()
-    ans = _search(b, moves=moves, current=current, depth=depth)
+    _search(b, moves=moves, current=current, depth=depth)
     e = time.time()
     print(f'nodes: {nodes}, execs: {execs}, elapsed: {e - s}, {repr(original)}')
-    return [t.gain_square for t in ans]
+    return seqs

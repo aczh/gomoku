@@ -74,6 +74,34 @@ def get_threes(board, current=True):
         ret += cur.values()
     return ret
 
+def get_straight_fours(board, current=True):
+    b = board.get_board(current=current)
+    ret = []
+    ################
+    # STRAIGHT FOURS
+    ################
+    # - ! o o o -
+    # - o ! o o -
+    # - o o ! o -
+    # - o o o ! -
+    straight_four_lookup = [
+        [ [0, 1, 5], [2, 3, 4] ],
+        [ [0, 2, 5], [1, 3, 4] ],
+        [ [0, 3, 5], [1, 2, 4] ],
+        [ [0, 4, 5], [1, 2, 3] ],
+    ]
+
+    for inc in [1, board.size, board.size + 1, board.size - 1]:
+        for emp, occ in straight_four_lookup:
+            bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2])
+            e_bits = (board.e >> inc * emp[0]) & (board.e >> inc * emp[1]) & (board.e >> inc * emp[2])
+
+            for o in get_ones(bits):
+                if is_continuous(o, inc, 6) and gmpy2.bit_test(e_bits, o):
+                    gain_index = o + inc * emp[1]
+                    ret.append(threat.StraightFour(o, inc, o + inc * emp[1], [o]))
+    return ret
+
 def get_fours(board, current=True):
     b = board.get_board(current=current)
     ret = []
@@ -130,7 +158,6 @@ def get_fours(board, current=True):
                 if is_continuous(o, inc, 6) and gmpy2.bit_test(e_bits, o):
                     gain_index = o + inc * emp[1]
                     cur[gain_index] = threat.StraightFour(o, inc, gain_index, o)
-
         for emp, occ in four_lookup:
             bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2])
             e_bits = (board.e >> inc * emp[0]) & (board.e >> inc * emp[1])
