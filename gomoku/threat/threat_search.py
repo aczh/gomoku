@@ -99,7 +99,7 @@ def get_straight_fours(board, current=True):
             for o in get_ones(bits):
                 if is_continuous(o, inc, 6) and gmpy2.bit_test(e_bits, o):
                     gain_index = o + inc * emp[1]
-                    ret.append(threat.StraightFour(o, inc, o + inc * emp[1], [o]))
+                    ret.append(threat.StraightFour(o, inc, o + inc * emp[1], o))
     return ret
 
 def get_fours(board, current=True):

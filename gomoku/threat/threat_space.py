@@ -5,24 +5,44 @@ from .. board import Board
 import time
 
 def confirm_winning_line(b, threats):
+    '''Confirms a string of threats leads to a win.'''
     if len(threats) == 0: return True
-
-    if get_fives(b): return True
-    if get_fives(b, current=False): return False
-
     t = threats[0]
-    b.move_index(t.gain_square)
 
-    if not get_fives(b, current=False):
-        if [sf for sf in get_straight_fours(b) if sf.gain_square != t.gain_square]: return False
+    # if we have a win, return True.
+    # if the enemy has a win, return False.
+    if get_fives(b): return True
+    # if get_fives(b, current=False): return False
+    if [f for f in get_fives(b, current=False) if f.gain_square != t.gain_square]: return False
 
+    # place the gain square of the first threat
+    b.force_index(t.gain_square)
+
+    # only worry about straight_four threats if we aren't threatening a five.
+    if t.type < ThreatType.FOUR:
+        if [sf for sf in get_straight_fours(b, current=False) if sf.gain_square != t.gain_square]: return False
+
+        opponent_fours = get_fours(b, current=False)
+        if opponent_fours:
+            for ot in opponent_fours:
+                _b = b.copy()
+                _b.force_index(ot.gain_square)
+                _b.force_index(ot.cost_squares[0], current=False)
+                _b.force_undo_index(t.gain_square)
+                if not confirm_winning_line(_b, threats): return False
+            return True
+
+
+    # the only moves the opponent can make are:
+    # moves that directly block the incoming threat
+    # five threats IF we aren't threatening a five
     for cs in t.cost_squares:
         _b = b.copy()
-        _b.move_index(cs)
+        _b.force_index(cs, current=False)
         if not confirm_winning_line(_b, threats[1:]): return False
     return True
 
-def threat_space_search(b, moves=[], current=True, depth=5, max_seqs=1):
+def threat_space_search(b, moves=[], current=True, depth=6, max_seqs=1):
     nodes = 0
     execs = 0
     original = b.copy()
@@ -40,12 +60,11 @@ def threat_space_search(b, moves=[], current=True, depth=5, max_seqs=1):
             nodes += 1
         execs += 1
 
+        # return if winning threat is found
         if has_five(b):
             if confirm_winning_line(original.copy(), moves):
                 seqs.append(moves)
                 return
-
-        # return if winning threat in threats
         for t in threats:
             if t.type == ThreatType.FIVE or t.type == ThreatType.STRAIGHT_FOUR:
                 if confirm_winning_line(original.copy(), [*moves, t]):

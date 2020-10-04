@@ -4,6 +4,7 @@ from .. threat.threat import Three
 from .. utils import to_row, ThreatType
 from .. board import Board
 import random
+from collections import Counter
 import time
 
 VERBOSE=1
@@ -13,15 +14,13 @@ class ThreatSpace:
         self.winning_line = []
 
     def score_moves(self, b, limit_moves=None):
-        if limit_moves is None:
+        if not limit_moves:
             limit_moves = self.valid_moves(b)
         scored_moves = []
         for move in limit_moves:
             _b = b.copy()
             _b.force_index(move)
-            score = 0
-            score += 1.25 * (len(get_fours(_b, current=True)) + len(get_threes(_b, current=True)))
-            score -= len(get_fours(_b, current=False)) + len(get_threes(_b, current=False))
+            score = len(get_fours(_b)) + len(get_threes(_b)) - 3 * len(get_threes(_b, current=False))
             scored_moves.append((score, move))
         scored_moves.sort(reverse=True)
         return scored_moves
@@ -45,7 +44,11 @@ class ThreatSpace:
         return [i for i in range(225) if b.is_valid_index(i)]
 
     def make_move(self, b):
+        # input("Press Enter to continue...")
         if b.turns == 0: return (7, 7)
+        if b.turns == 1:
+            if b.is_valid_move(7, 7): return (7, 7)
+            return (6, 6)
 
         forced = self.forced_moves(b)
         if forced:
@@ -92,7 +95,7 @@ class ThreatSpace:
         # make a move based on simple heuristic
         score_moves = self.score_moves(b, limit_moves=limit_moves)
         best_moves = [tup[1] for tup in score_moves][:10]
-        threatening_moves = []
+        threatening_moves = Counter()
         for move in best_moves:
             _b = b.copy()
             _b.force_index(move)
@@ -101,10 +104,17 @@ class ThreatSpace:
                 moves = [move]
                 [moves.append(t.gain_square) for t in tss[0]]
                 if VERBOSE: print(f'Threatening line: {[to_row(t) for t in moves]}')
-                threatening_moves.append(move)
+                for move in moves:
+                    threatening_moves[move] += 1
+                    # threatening_moves[move]
+                # threatening_moves.append(move)
         if threatening_moves:
-            return random.choice(threatening_moves)
+            hmm = [(v, k) for k, v in threatening_moves.items() if k in best_moves]
+            hmm.sort(reverse=True)
+            print(hmm)
+            return hmm[0][1]
+            # print(threatening_moves)
+            # return random.choice(threatening_moves)
 
         print('Random move...')
-        return random.choice(best_moves)
-        # return random.choice([tup[1] for tup in score_moves if tup[0] == score_moves[0][0]][:10])
+        return random.choice(best_moves[:3])

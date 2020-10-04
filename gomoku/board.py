@@ -52,6 +52,15 @@ class Board:
     def force_move(self, r, c, current=True):
         self.force_index(r * self.size + c, current=current)
 
+    def force_undo_index(self, index, current=True):
+        if self.turns % 2 == 0 ^ current:
+            self.b2 = gmpy2.bit_clear(self.b2, index)
+        else:
+            self.b1 = gmpy2.bit_clear(self.b1, index)
+
+        self.e = gmpy2.bit_set(self.e, index)
+        self.o = gmpy2.bit_clear(self.o, index)
+
     #####################
     # MOVE
     #####################
@@ -62,7 +71,7 @@ class Board:
         return c >= 0 and r >= 0 and r < self.size and c < self.size and gmpy2.bit_test(self.e, r * self.size + c)
 
     def move_index(self, index):
-        if not self.is_valid_index(index): raise Exception(f'Invalid index: {index}')
+        if not self.is_valid_index(index): raise Exception(f'Invalid cell: {index // 15}, {index % 15}')
         self.force_index(index)
         self.turns += 1
 

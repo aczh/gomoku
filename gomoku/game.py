@@ -37,8 +37,8 @@ class Game:
             self.b.move(*move)
             if verbose:
                 print('\n====================================================================')
-                print('Player {} placed their piece at: {}, {}'.format(self.b.turns % 2 + 1, *move))
-                print('Player {}\'s turn to move.'.format(self.b.turns % 2 + 1))
+                print(f'Player {self.b.turns % 2} placed their piece at {move[0]}, {move[1]}')
+                print(f'Player {self.b.turns % 2 + 1}\'s turn to move.')
                 print(self.b)
 
         self.on_win()

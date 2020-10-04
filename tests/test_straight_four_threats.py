@@ -4,6 +4,7 @@ from gomoku.utils import ThreatType
 
 def test_straight_fours_h():
     b = Board(b1=23037063802496884590169568565107503057583874975924630746556268551, b2=23589953333756809820333638239253801952324717697362898023789247885312, turns=40)
+    print(b)
     assert set([94, 214]) == set([t.gain_square for t in get_straight_fours(b)])
     assert set([91, 92, 93, 211, 212, 213]) == set([rs for t in get_straight_fours(b) for rs in t.rest_squares])
 
