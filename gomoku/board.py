@@ -1,26 +1,53 @@
-import sys
+'''
+Bitboard implementation.
+Holds 2 integers, b1 and b2 for player 1 and player 2.
+'''
+
 import gmpy2
-from . import utils
 
 class Board:
-    def __init__(self, size=15, b1=0, b2=0, turns=0):
-        self.size = size
-        self.turns = turns
+    def __init__(self, b1=0, b2=0, turns=0):
+        '''Bitboard instance.
 
-        self.mask = 53919893334301279589334030174039261347274288845081144962207220498431
-
+        Parameters
+        ----------
+        b1 : bits of player 1.
+        b2 : bits of player 2.
+        turns: number of turns taken.
+        '''
         self.b1 = b1
         self.b2 = b2
+        self.turns = turns
+
+        # hardcoded size of bitboard, 15x15.
+        self.size = 15
+        # bitmask of bitboard, 2**225 - 1
+        self.mask = 53919893334301279589334030174039261347274288845081144962207220498431
+
+        # represents bits occupied by either player.
         self.o = self.b1 | self.b2
+        # represents bits not occupied by either player.
         self.e = self.o ^ self.mask
 
     def copy(self):
-        return Board(size=self.size, b1=self.b1, b2=self.b2, turns=self.turns)
+        '''Returns a copy of the current board.'''
+        return Board(b1=self.b1, b2=self.b2, turns=self.turns)
 
-    def moves(self, moves=[], p1=[], p2=[]):
+    def moves(self, p1=[], p2=[]):
+        '''
+        Makes a series of moves for player1 and player2.
+        Moves in each list can be either tuples of (row, col) or indices from 0 - 225.
+
+        Parameters
+        ----------
+        p1 : list of moves to make for player 1.
+        p2 : list of moves to make for player 2.
+
+        '''
         tmp = self.turns
         self.turns = 0
         for move in p1:
+            # convert row tuple to index
             if not isinstance(move, int):
                 move = move[0] * self.size + move[1]
             self.force_index(move)
@@ -29,11 +56,12 @@ class Board:
             if not isinstance(move, int):
                 move = move[0] * self.size + move[1]
             self.force_index(move, current=False)
-        self.turns = tmp + len(p1) + len(p2)
+        self.turns = tmp
 
     def get_board(self, current=True):
         '''
         Returns board of current player if current is set to True.
+        Otherwise, returns the board of the other player.
         '''
         if self.turns % 2 == 0 ^ current:
             return self.b2
@@ -43,6 +71,17 @@ class Board:
     # FORCE MOVE
     #####################
     def force_index(self, index, current=True):
+        '''
+        Forces a move to a certain index in the bitboard.
+        Does NOT check if the index is occupied or not, so an illegal move can be made.
+        Updates the empty/occupied bitboards.
+
+        Parameters
+        ----------
+        index: index of the move to make.
+        current: whether to make the move for the current player or not.
+        '''
+
         if self.turns % 2 == 0 ^ current:
             self.b2 = gmpy2.bit_set(self.b2, index)
         else:
@@ -54,25 +93,35 @@ class Board:
     def force_move(self, r, c, current=True):
         self.force_index(r * self.size + c, current=current)
 
-    def force_undo_index(self, index, current=True):
-        if self.turns % 2 == 0 ^ current:
-            self.b2 = gmpy2.bit_clear(self.b2, index)
-        else:
-            self.b1 = gmpy2.bit_clear(self.b1, index)
+    def force_undo_index(self, index):
+        '''
+        Clears a move from the bitboard.
+        Updates the empty/occupied bitboards.
+        '''
+
+        self.b1 = gmpy2.bit_clear(self.b1, index)
+        self.b2 = gmpy2.bit_clear(self.b2, index)
 
         self.e = gmpy2.bit_set(self.e, index)
         self.o = gmpy2.bit_clear(self.o, index)
 
     #####################
-    # MOVE
+    # VALID
     #####################
     def is_valid_index(self, index):
-        return 0 <= index < self.size * self.size and not gmpy2.bit_test(self.e, index)
+        '''Determines if the passed in index is a valid move.'''
+        return 0 <= index < self.size * self.size and gmpy2.bit_test(self.e, index)
 
     def is_valid_move(self, r, c):
-        return c >= 0 and r >= 0 and r < self.size and c < self.size and gmpy2.bit_test(self.e, r * self.size + c)
+        return self.is_valid_index(r * self.size + c)
 
+    #####################
+    # MOVE
+    #####################
     def move_index(self, index):
+        '''
+        Checks to see if a move is valid. If the move is valid, make it, then increment turns.
+        '''
         if not self.is_valid_index(index): raise Exception(f'Invalid cell: {index // 15}, {index % 15}')
         self.force_index(index)
         self.turns += 1
@@ -81,14 +130,8 @@ class Board:
         self.move_index(r * 15 + c)
 
     #####################
-    # VALID
+    # BUILTIN
     #####################
-    def is_valid_index(self, index):
-        return 0 <= index < self.size * self.size and gmpy2.bit_test(self.e, index)
-
-    def is_valid_move(self, r, c):
-        return c >= 0 and r >= 0 and r < self.size and c < self.size and gmpy2.bit_test(self.e, r * self.size + c)
-
     def __repr__(self):
         return f'b1={self.b1}, b2={self.b2}, turns={self.turns}'
 

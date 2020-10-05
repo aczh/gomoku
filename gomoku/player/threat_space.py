@@ -1,11 +1,9 @@
-from .. threat.threat_search import get_fives, get_fours, get_threes, get_threats, has_five
-from .. threat.threat_space import threat_space_search
-from .. threat.threat import Three
-from .. utils import to_row, ThreatType
-from .. board import Board
 import random
 from collections import Counter
-import time
+from .. threat.threat_search import get_fives, get_fours, get_threes
+from .. threat.threat_space import threat_space_search
+from .. threat.threat import ThreatType
+from .. utils import to_row
 
 VERBOSE=1
 

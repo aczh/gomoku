@@ -1,11 +1,8 @@
-from .. threat.threat_search import get_fives, get_fours, get_threes, get_threats, has_five, get_straight_fours
-from .. threat.threat import Three
-from .. utils import to_row, ThreatType
-from .. board import Board
 import time
+from .. threat.threat_search import get_fives, get_fours, get_threats, has_five, get_straight_fours
+from .. threat.threat import ThreatType
 
 seen = set()
-
 seen_lines = set()
 
 def confirm_winning_line(b, threats):
@@ -24,13 +21,10 @@ def confirm_winning_line(b, threats):
 
     # only worry about straight_four threats if we aren't threatening a five.
     if t.type < ThreatType.FOUR:
-        fours = get_fours(b, current=False)
-
         if [sf for sf in get_straight_fours(b, current=False) if sf.gain_square != t.gain_square]: return False
 
         opponent_fours = get_fours(b, current=False)
         if opponent_fours:
-
             processed_fours = set()
 
             for ot in opponent_fours:

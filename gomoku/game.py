@@ -1,3 +1,7 @@
+'''
+Class that plays a game of Gomoku.
+'''
+
 from . board import Board
 from . threat.threat_search import has_five
 from . utils import to_row
@@ -22,7 +26,7 @@ class Game:
 
         while not has_five(self.b) and not has_five(self.b, current=False):
             if self.b.turns == self.b.size * self.b.size:
-                self.on_draw(self)
+                self.on_draw()
                 break
 
             if self.b.turns % 2 == 0:
@@ -32,7 +36,6 @@ class Game:
 
             if isinstance(move, int):
                 move = to_row(move)
-
 
             self.b.move(*move)
             if verbose:
