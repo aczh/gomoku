@@ -223,38 +223,10 @@ def _get_fives(board, current=True):
 
 
 def has_five(board, current=True):
-    '''
-    Returns True if current player has a 5 in a row.
-    ooooo
-
-    Mask out bits that cannot possibly be the start of a 5 chain.
-        Note that vertical chains do not need to be masked.
-    For example, for d2, these positions should be masked out:
-        ______________________________
-        |o o o o - - - - - - - - - - -
-        |o o o o - - - - - - - - - - -
-        |o o o o - - - - - - - - - - -
-        |o o o o - - - - - - - - - - -
-        |o o o o - - - - - - - - - - -
-        |o o o o - - - - - - - - - - -
-        |o o o o - - - - - - - - - - -
-        |o o o o - - - - - - - - - - -
-        |o o o o - - - - - - - - - - -
-        |o o o o - - - - - - - - - - -
-        |o o o o - - - - - - - - - - -
-        |o o o o o o o o o o o o o o o
-        |o o o o o o o o o o o o o o o
-        |o o o o o o o o o o o o o o o
-        |o o o o o o o o o o o o o o o
-    '''
+    '''Returns True if current player has a 5 in a row.'''
     b = board.get_board(current=current)
     for inc in [1, board.size, board.size + 1, board.size - 1]:
         bits = b & (b >> inc) & (b >> inc * 2) & (b >> inc * 3) & (b >> inc * 4)
-        if inc == 1:
-            bits = bits & (board.mask ^ 50551442708509638019481228276817716256851898352638104594226075432960)
-        elif inc == board.size + 1:
-            bits = bits & (board.mask ^ 53919893334301279586412364984924497568044753908033279642844990044160)
-        elif inc == board.size - 1:
-            bits = bits & (board.mask ^ 53919893334301279542587387148203040879601729852315299852411533230095)
+        bits = bits & threat_mask[5][inc]
         if bits: return True
     return False
