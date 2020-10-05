@@ -32,15 +32,17 @@ def confirm_winning_line(b, threats):
         if opponent_fours:
 
             processed_fours = set()
-            while len(processed_fours) < len(opponent_fours):
+
+            for ot in opponent_fours:
+                if ot in processed_fours:
+                    continue
                 _b = b.copy()
-                for ot in opponent_fours:
-                    if ot in processed_fours:
-                        continue
-                    if _b.is_valid_index(ot.gain_square) and _b.is_valid_index(ot.cost_squares[0]):
-                        processed_fours.add(ot)
-                        _b.force_index(ot.gain_square)
-                        _b.force_index(ot.cost_squares[0], current=False)
+                for ot1 in opponent_fours:
+                    if _b.is_valid_index(ot1.gain_square) and _b.is_valid_index(ot1.cost_squares[0]):
+                        processed_fours.add(ot1)
+                        _b.force_index(ot1.gain_square)
+                        _b.force_index(ot1.cost_squares[0], current=False)
+
                 _b.force_undo_index(t.gain_square)
                 if not confirm_winning_line(_b, threats): return False
             return True
@@ -54,7 +56,7 @@ def confirm_winning_line(b, threats):
         if not confirm_winning_line(_b, threats[1:]): return False
     return True
 
-def threat_space_search(b, moves=[], current=True, depth=7, max_seqs=1, VERBOSE=0):
+def threat_space_search(b, moves=[], current=True, depth=10, max_seqs=1, VERBOSE=0):
     nodes = 0
     terminated_nodes = 0
     execs = 0
@@ -65,7 +67,6 @@ def threat_space_search(b, moves=[], current=True, depth=7, max_seqs=1, VERBOSE=
             return
         else:
             seen.add((b, current))
-
 
         nonlocal nodes
         nonlocal terminated_nodes

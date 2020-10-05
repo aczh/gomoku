@@ -20,7 +20,10 @@ class ThreatSpace:
         for move in limit_moves:
             _b = b.copy()
             _b.force_index(move)
-            score = len(get_fours(_b)) + len(get_threes(_b)) - 3 * len(get_threes(_b, current=False))
+            score = 0
+            score += len(get_fours(_b)) * 4 + len(get_threes(_b)) * 3
+            score *= 1.5
+            score -= len(get_fours(_b, current=False)) * 4 + len(get_threes(_b, current=False)) * 3
             scored_moves.append((score, move))
         scored_moves.sort(reverse=True)
         return scored_moves
