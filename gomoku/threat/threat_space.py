@@ -4,9 +4,14 @@ from .. utils import to_row, ThreatType
 from .. board import Board
 import time
 
+seen = set()
+
+seen_lines = set()
+
 def confirm_winning_line(b, threats):
     '''Confirms a string of threats leads to a win.'''
     if len(threats) == 0: return True
+
     t = threats[0]
 
     # if we have a win, return True.
@@ -25,27 +30,20 @@ def confirm_winning_line(b, threats):
 
         opponent_fours = get_fours(b, current=False)
         if opponent_fours:
-            for ot in opponent_fours:
+
+            processed_fours = set()
+            while len(processed_fours) < len(opponent_fours):
                 _b = b.copy()
-                _b.force_index(ot.gain_square)
-                _b.force_index(ot.cost_squares[0], current=False)
+                for ot in opponent_fours:
+                    if ot in processed_fours:
+                        continue
+                    if _b.is_valid_index(ot.gain_square) and _b.is_valid_index(ot.cost_squares[0]):
+                        processed_fours.add(ot)
+                        _b.force_index(ot.gain_square)
+                        _b.force_index(ot.cost_squares[0], current=False)
                 _b.force_undo_index(t.gain_square)
                 if not confirm_winning_line(_b, threats): return False
             return True
-
-        # opponent_fours = get_fours(b, current=False)
-        #
-        # for f in opponent_fours:
-        #     if f.type == ThreatType.STRAIGHT_FOUR and f.gain_square != t.gain_square: return False
-        #
-        # if opponent_fours:
-        #     for ot in opponent_fours:
-        #         _b = b.copy()
-        #         _b.force_index(ot.gain_square)
-        #         _b.force_index(ot.cost_squares[0], current=False)
-        #         _b.force_undo_index(t.gain_square)
-        #         if not confirm_winning_line(_b, threats): return False
-        #     return True
 
     # the only moves the opponent can make are:
     # moves that directly block the incoming threat
@@ -56,23 +54,29 @@ def confirm_winning_line(b, threats):
         if not confirm_winning_line(_b, threats[1:]): return False
     return True
 
-def threat_space_search(b, moves=[], current=True, depth=6, max_seqs=1, VERBOSE=0):
+def threat_space_search(b, moves=[], current=True, depth=7, max_seqs=1, VERBOSE=0):
     nodes = 0
+    terminated_nodes = 0
     execs = 0
     original = b.copy()
     seqs = []
     def _search(b, moves=[], current=True, depth=50):
-        if depth <= 0: return
+        if (b, current) in seen:
+            return
+        else:
+            seen.add((b, current))
+
+
+        nonlocal nodes
+        nonlocal terminated_nodes
+        nonlocal execs
+
+        if depth <= 0:
+            terminated_nodes += 1
+            return
 
         # get threats
         threats = get_threats(b, current=current)
-
-        # performance tracking
-        nonlocal nodes
-        nonlocal execs
-        if len(threats) == 0:
-            nodes += 1
-        execs += 1
 
         # return if winning threat is found
         if has_five(b):
@@ -116,9 +120,11 @@ def threat_space_search(b, moves=[], current=True, depth=6, max_seqs=1, VERBOSE=
 
                     _search(_b, moves=[*moves, t, u], current=current, depth=depth-2)
                     if len(seqs) >= max_seqs: return
+        nodes += 1
+        execs += 1
 
     s = time.time()
     _search(b, moves=moves, current=current, depth=depth)
     e = time.time()
-    if VERBOSE: print(f'nodes: {nodes}, execs: {execs}, elapsed: {e - s}, {repr(original)}')
+    if VERBOSE: print(f'nodes: {nodes}, terminated_nodes: {terminated_nodes}, execs: {execs}, elapsed: {e - s}, {repr(original)}')
     return seqs

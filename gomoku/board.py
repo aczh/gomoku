@@ -108,3 +108,9 @@ class Board:
         s.append(f'b1={self.b1}, b2={self.b2}, turns={self.turns}')
         s.append('===================================')
         return '\n'.join(s)
+
+    def __eq__(self, other):
+        return self.b1 == other.b1 and self.b2 == other.b2
+
+    def __hash__(self):
+        return hash((self.b1, self.b2))

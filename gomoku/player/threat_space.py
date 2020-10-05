@@ -99,6 +99,9 @@ class ThreatSpace:
         for move in best_moves:
             _b = b.copy()
             _b.force_index(move)
+            if VERBOSE: print(f'Searching {to_row(move)}')
+
+            # TODO: if no threatening, sort by terminated_nodes
             tss = threat_space_search(_b, VERBOSE=VERBOSE)
             if tss:
                 moves = [move]

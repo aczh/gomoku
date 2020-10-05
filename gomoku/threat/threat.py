@@ -3,11 +3,12 @@ from .. utils import ThreatType
 
 
 class Threat:
-    def __init__(self, gain=-1, cost=[], rest=[]):
+    def __init__(self, gain=-1, cost=[], rest=[], inc=-1):
         self.type = None
         self.gain_square = gain
         self.cost_squares = cost
         self.rest_squares = rest
+        self.inc = inc
 
     def __eq__(self, other):
         return self.gain_square == other.gain_square and self.cost_squares == other.cost_squares and self.rest_squares == other.rest_squares
@@ -35,7 +36,7 @@ class Three(Threat):
 
 class Five(Threat):
     def __init__(self, initial, inc, gain):
-        super()
+        super().__init__()
         self.type = ThreatType.FIVE
         self.gain_square = gain
         self.rest_squares = [i for i in range(initial, initial + 5 * inc, inc) if i != gain]
@@ -43,7 +44,7 @@ class Five(Threat):
 
 class Four(Threat):
     def __init__(self, initial, inc, gain, cost):
-        super()
+        super().__init__()
         self.type = ThreatType.FOUR
         self.gain_square = gain
         self.rest_squares = [i for i in range(initial, initial + 5 * inc, inc) if i != gain and i != cost]
@@ -53,5 +54,3 @@ class StraightFour(Four):
     def __init__(self, initial, inc, gain, cost):
         super().__init__(initial, inc, gain, cost)
         self.type = ThreatType.STRAIGHT_FOUR
-
-    # def get_defensive_moves(self):
