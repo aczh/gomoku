@@ -3,11 +3,12 @@ from .. utils import ThreatType
 
 
 class Threat:
-    def __init__(self, gain=-1, cost=[], rest=[]):
+    def __init__(self, gain=-1, cost=[], rest=[], inc=-1):
         self.type = None
         self.gain_square = gain
         self.cost_squares = cost
         self.rest_squares = rest
+        self.inc = inc
 
     def __eq__(self, other):
         return self.gain_square == other.gain_square and self.cost_squares == other.cost_squares and self.rest_squares == other.rest_squares
@@ -24,18 +25,18 @@ class Threat:
         )
 
 class BrokenThree(Threat):
-    def __init__(self, gain, cost, rest):
-        super().__init__(gain, cost, rest)
+    def __init__(self, gain, cost, rest, inc):
+        super().__init__(gain, cost, rest, inc)
         self.type = ThreatType.BROKEN_THREE
 
 class Three(Threat):
-    def __init__(self, gain, cost, rest):
-        super().__init__(gain, cost, rest)
+    def __init__(self, gain, cost, rest, inc):
+        super().__init__(gain, cost, rest, inc)
         self.type = ThreatType.THREE
 
 class Five(Threat):
     def __init__(self, initial, inc, gain):
-        super()
+        super().__init__(inc=inc)
         self.type = ThreatType.FIVE
         self.gain_square = gain
         self.rest_squares = [i for i in range(initial, initial + 5 * inc, inc) if i != gain]
@@ -43,7 +44,7 @@ class Five(Threat):
 
 class Four(Threat):
     def __init__(self, initial, inc, gain, cost):
-        super()
+        super().__init__(inc=inc)
         self.type = ThreatType.FOUR
         self.gain_square = gain
         self.rest_squares = [i for i in range(initial, initial + 5 * inc, inc) if i != gain and i != cost]

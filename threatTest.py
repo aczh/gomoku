@@ -1,39 +1,31 @@
 from gomoku.board import Board
-from gomoku.threat.threat_space import threat_space_search
-from gomoku.utils import to_row
+from gomoku.threat.threat_space import get_fours, get_threes, threat_space_search, get_straight_fours
+from gomoku.utils import to_row, ThreatType
 
+# b = Board(b1=680590695484625926093438556930779906048, b2=396155319976304968697169051648, turns=10)
+# b = Board(b1=2787933468529643753549278615752325436801024, b2=12544254247361433409159635450619402997727232, turns=11)
+# b = Board(b1=85074486249991379969974003481027018752, b2=8362779454642241179290502190363056980099072, turns=18)
+b = Board(b1=170156761301799711863728385337151455232, b2=425397093412195008049210385209493553152, turns=23)
+# b = Board(b1=38942543366168743041586120932458496, b2=1395583100171027184354007318576826798833664, turns=18)
+# b = Board(b1=5575696741356393110601078387280349356883968, b2=91356396587427495746924827973311175507411206144, turns=13)
+# b.force_move(6, 7)
+# b.force_move(10, 7)
+# b = Board(b1=170159356657930428656915835640124276736, b2=20769266669555379696147353909067776, turns=9)
+# b.move(4, 6)
+# b = Board(b1=446646568701890811025830444473897713664, b2=11683103721656334534779806651777024, turns=20)
 
-# p1 = [
-#     (7, 7),
-#     (8, 7),
-#     (8, 6),
-#     (8, 8),
-#     (6, 8),
-#     (5, 8),
-#     (5, 5),
-#     (5, 6),
-#     (6, 4),
-# ]
-# p2 = [
-#     (6, 6),
-#     (6, 7),
-#     (6, 5),
-#     (7, 6),
-#     (8, 5),
-#     (5, 4),
-#     (7, 8),
-#     (8, 10),
-#     (5, 9),
-# ]
-b = Board(b1=255216967487562382425159486070155378688, b2=396140812571321687967719751680, turns=4)
-# b.moves(p1=p1, p2=p2)
-
+# b.move(3, 5)
+# b.move(4, 5)
 print(b)
 import cProfile
 pr = cProfile.Profile()
 pr.enable()
 
-print([to_row(t) for t in threat_space_search(b)])
-
-pr.disable()
-pr.print_stats(sort='time')
+seqs = threat_space_search(b, max_seqs=1, depth=10, VERBOSE=1)
+for seq in seqs:
+    print('---------SEQ--------')
+    for t in seq:
+        print(str(t))
+#
+# pr.disable()
+# pr.print_stats(sort='time')

@@ -7,10 +7,12 @@ class Board:
         self.size = size
         self.turns = turns
 
+        self.mask = 53919893334301279589334030174039261347274288845081144962207220498431
+
         self.b1 = b1
         self.b2 = b2
         self.o = self.b1 | self.b2
-        self.e = self.o ^ 53919893334301279589334030174039261347274288845081144962207220498431
+        self.e = self.o ^ self.mask
 
     def copy(self):
         return Board(size=self.size, b1=self.b1, b2=self.b2, turns=self.turns)
@@ -52,6 +54,15 @@ class Board:
     def force_move(self, r, c, current=True):
         self.force_index(r * self.size + c, current=current)
 
+    def force_undo_index(self, index, current=True):
+        if self.turns % 2 == 0 ^ current:
+            self.b2 = gmpy2.bit_clear(self.b2, index)
+        else:
+            self.b1 = gmpy2.bit_clear(self.b1, index)
+
+        self.e = gmpy2.bit_set(self.e, index)
+        self.o = gmpy2.bit_clear(self.o, index)
+
     #####################
     # MOVE
     #####################
@@ -62,7 +73,7 @@ class Board:
         return c >= 0 and r >= 0 and r < self.size and c < self.size and gmpy2.bit_test(self.e, r * self.size + c)
 
     def move_index(self, index):
-        if not self.is_valid_index(index): raise Exception(f'Invalid index: {index}')
+        if not self.is_valid_index(index): raise Exception(f'Invalid cell: {index // 15}, {index % 15}')
         self.force_index(index)
         self.turns += 1
 
@@ -97,3 +108,9 @@ class Board:
         s.append(f'b1={self.b1}, b2={self.b2}, turns={self.turns}')
         s.append('===================================')
         return '\n'.join(s)
+
+    def __eq__(self, other):
+        return self.b1 == other.b1 and self.b2 == other.b2
+
+    def __hash__(self):
+        return hash((self.b1, self.b2))
