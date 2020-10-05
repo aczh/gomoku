@@ -130,6 +130,20 @@ class Board:
         self.move_index(r * 15 + c)
 
     #####################
+    # Slow rotate, only used for testing
+    #####################
+    def rotate(self):
+        '''Returns a board with bits rotated clockwise.'''
+        b = Board()
+        for r in range(15):
+            for c in range(15):
+                if gmpy2.bit_test(self.b1, r * 15 + c):
+                    b.b1 = gmpy2.bit_set(b.b1, (14 - c) * 15 + r)
+                if gmpy2.bit_test(self.b2, r * 15 + c):
+                    b.b2 = gmpy2.bit_set(b.b2, (14 - c) * 15 + r)
+        return b
+
+    #####################
     # BUILTIN
     #####################
     def __repr__(self):
