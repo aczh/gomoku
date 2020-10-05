@@ -70,8 +70,7 @@ def _get_threes(board, current=True):
             e_bits = (board.e >> inc * emp[0]) & (board.e >> inc * emp[1]) & (board.e >> inc * emp[2]) & (board.e >> inc * emp[3]) & (board.e >> inc * emp[4])
 
             bits = (b >> inc * r[0]) & (b >> inc * r[1])
-            bits = bits & threat_mask[7][inc]
-            bits = bits & e_bits
+            bits = bits & threat_mask[7][inc] & e_bits
 
             for o in get_ones(bits):
                 gain = o + (x + 2) * inc
@@ -85,8 +84,7 @@ def _get_threes(board, current=True):
                 e_bits = (board.e >> inc * emp[0]) & (board.e >> inc * emp[1]) & (board.e >> inc * emp[2]) & (board.e >> inc * emp[3])
 
                 bits = (b >> inc * x) & (b >> inc * y)
-                bits = bits & threat_mask[6][inc]
-                bits = bits & e_bits
+                bits = bits & threat_mask[6][inc] & e_bits
 
                 for o in get_ones(bits):
                     for gain, cost in lookup[(x, y)][0]:
@@ -131,11 +129,9 @@ def _get_straight_fours(board, current=True):
         for emp, occ in straight_four_lookup:
             e_bits = (board.e >> inc * emp[0]) & (board.e >> inc * emp[1]) & (board.e >> inc * emp[2])
             bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2])
-            bits = bits & threat_mask[6][inc]
-            bits = bits & e_bits
+            bits = bits & threat_mask[6][inc] & e_bits
 
             for o in get_ones(bits):
-                gain_index = o + inc * emp[1]
                 ret.append(threat.StraightFour(o, inc, o + inc * emp[1], o))
     return ret
 
@@ -183,8 +179,7 @@ def _get_fours(board, current=True):
         for emp, occ in four_lookup:
             e_bits = (board.e >> inc * emp[0]) & (board.e >> inc * emp[1])
             bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2])
-            bits = bits & threat_mask[5][inc]
-            bits = bits & e_bits
+            bits = bits & threat_mask[5][inc] & e_bits
             for o in get_ones(bits):
                 i1 = o + emp[0] * inc
                 i2 = o + emp[1] * inc
@@ -196,31 +191,29 @@ def _get_fours(board, current=True):
 
 def _get_fives(board, current=True):
     b = board.get_board(current=current)
+    ret = []
+
     # 0: - o o o o
     # 1: o - o o o
     # 2: o o - o o
     # 3: o o o - o
     # 4: o o o o -
     lookup = [
-        [ 0, [1, 2, 3, 4] ],
-        [ 1, [0, 2, 3, 4] ],
-        [ 2, [0, 1, 3, 4] ],
-        [ 3, [0, 1, 2, 4] ],
-        [ 4, [0, 1, 2, 3] ],
+        [ [0], [1, 2, 3, 4] ],
+        [ [1], [0, 2, 3, 4] ],
+        [ [2], [0, 1, 3, 4] ],
+        [ [3], [0, 1, 2, 4] ],
+        [ [4], [0, 1, 2, 3] ],
     ]
-
-    ret = []
 
     for inc in [1, board.size, board.size + 1, board.size - 1]:
         for emp, occ in lookup:
+            e_bits = (board.e >> inc * emp[0])
             bits = (b >> inc * occ[0]) & (b >> inc * occ[1]) & (b >> inc * occ[2]) & (b >> inc * occ[3])
-            bits = bits & threat_mask[5][inc]
+            bits = bits & threat_mask[5][inc] & e_bits
             for o in get_ones(bits):
-                gain_square = o + emp * inc
-                if board.is_valid_index(gain_square):
-                    ret.append(threat.Five(o, inc, gain_square))
+                ret.append(threat.Five(o, inc, o + emp[0] * inc))
     return ret
-
 
 def has_five(board, current=True):
     '''Returns True if current player has a 5 in a row.'''
