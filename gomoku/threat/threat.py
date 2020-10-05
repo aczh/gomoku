@@ -25,18 +25,18 @@ class Threat:
         )
 
 class BrokenThree(Threat):
-    def __init__(self, gain, cost, rest):
-        super().__init__(gain, cost, rest)
+    def __init__(self, gain, cost, rest, inc):
+        super().__init__(gain, cost, rest, inc)
         self.type = ThreatType.BROKEN_THREE
 
 class Three(Threat):
-    def __init__(self, gain, cost, rest):
-        super().__init__(gain, cost, rest)
+    def __init__(self, gain, cost, rest, inc):
+        super().__init__(gain, cost, rest, inc)
         self.type = ThreatType.THREE
 
 class Five(Threat):
     def __init__(self, initial, inc, gain):
-        super().__init__()
+        super().__init__(inc=inc)
         self.type = ThreatType.FIVE
         self.gain_square = gain
         self.rest_squares = [i for i in range(initial, initial + 5 * inc, inc) if i != gain]
@@ -44,7 +44,7 @@ class Five(Threat):
 
 class Four(Threat):
     def __init__(self, initial, inc, gain, cost):
-        super().__init__()
+        super().__init__(inc=inc)
         self.type = ThreatType.FOUR
         self.gain_square = gain
         self.rest_squares = [i for i in range(initial, initial + 5 * inc, inc) if i != gain and i != cost]

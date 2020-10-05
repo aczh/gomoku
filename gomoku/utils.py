@@ -14,15 +14,6 @@ def to_row(index):
 def to_index(r, c):
     return r * self.size + c
 
-def is_continuous(start, inc, length):
-    '''
-    Determines if indices rollover columns
-    o o o o o, horizontal -> is_continuous(0, 1, 5)
-    '''
-
-    end = start + inc * (length - 1)
-    return abs(end % 15 - start % 15) < length
-
 def get_ones(num):
     '''Get indices of ones.'''
     indices = []
