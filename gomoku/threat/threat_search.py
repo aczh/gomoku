@@ -74,7 +74,7 @@ def _get_threes(board, current=True):
                 cur[gain_square] = threat.Three(
                     gain=gain_square,
                     cost=list([o + c * inc for c in cost]),
-                    rest=list([o * c * inc for c in rest]),
+                    rest=list([o + c * inc for c in rest]),
                     inc=inc
                 )
 
