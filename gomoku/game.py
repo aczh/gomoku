@@ -18,6 +18,7 @@ class Game:
 
     def on_draw(self):
         print('Drawn game!')
+        print(self.b)
 
     def play(self, verbose=1):
         print('\n====================================================================')

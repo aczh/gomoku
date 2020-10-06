@@ -1,5 +1,5 @@
-from .. utils import to_row
 from enum import IntEnum
+from .. utils import to_row
 
 class ThreatType(IntEnum):
     # Five in a row.

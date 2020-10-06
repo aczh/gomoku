@@ -1,5 +1,3 @@
-import gmpy2
-
 from . import threat
 from .. utils import get_ones
 from . threat_masks import threat_mask

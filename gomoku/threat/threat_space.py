@@ -2,6 +2,8 @@ import time
 from .. threat.threat_search import get_fives, get_fours, get_threats, has_five, get_straight_fours
 from .. threat.threat import ThreatType
 
+threat_space_cache = {}
+
 def confirm_winning_line(b, threats):
     '''Confirms if a string of threats leads to a win.
 
