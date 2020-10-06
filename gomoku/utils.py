@@ -1,18 +1,12 @@
-from enum import IntEnum
 import gmpy2
 
-class ThreatType(IntEnum):
-    FIVE = 5
-    STRAIGHT_FOUR = 4
-    FOUR = 3
-    THREE = 2
-    BROKEN_THREE = 1
-
 def to_row(index):
+    '''Converts an index to a row.'''
     return (index // 15, index % 15)
 
 def to_index(r, c):
-    return r * self.size + c
+    '''Converts a row, col to an index.'''
+    return r * 15 + c
 
 def get_ones(num):
     '''Get indices of ones.'''

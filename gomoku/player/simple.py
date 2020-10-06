@@ -1,9 +1,9 @@
-from .. threat.threat_search import get_fives, get_fours, get_threes, get_threats
-from .. utils import to_row, ThreatType
+from .. threat.threat_search import get_threats
 import random
 
 class Simple:
     def make_move(self, b):
+        # get and sort best moves of own board/enemey
         m_threats = get_threats(b)
         m_threats.sort(key=lambda x: x.type, reverse=True)
 
@@ -16,6 +16,7 @@ class Simple:
         t_best_index = -1 if not t_threats else t_threats[0].gain_square
         t_best_score = -1 if not t_threats else t_threats[0].type
 
+        # return best scoring move, prioritizing own moves over blocking enemy moves
         if m_best_score != -1 and m_best_score >= t_best_score:
             print(f'Making {m_best_score.name}')
             return m_best_index
@@ -27,6 +28,7 @@ class Simple:
         return random.choice(self.valid_moves(b))
 
     def valid_moves(self, b):
+        # get all possible moves on the board
         moves = [
             (r, c)
             for r in range(b.size) for c in range(b.size)

@@ -1,6 +1,7 @@
 from gomoku.board import Board
 from gomoku.threat.threat_space import get_fours, get_threes, threat_space_search, get_straight_fours
-from gomoku.utils import to_row, ThreatType
+from gomoku.threat.threat import ThreatType
+from gomoku.utils import to_row
 
 # b = Board(b1=680590695484625926093438556930779906048, b2=396155319976304968697169051648, turns=10)
 # b = Board(b1=2787933468529643753549278615752325436801024, b2=12544254247361433409159635450619402997727232, turns=11)

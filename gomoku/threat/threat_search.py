@@ -1,8 +1,7 @@
 import gmpy2
 
 from . import threat
-from .. import utils
-from .. utils import ThreatType, get_ones, to_row
+from .. utils import get_ones
 from . threat_masks import threat_mask
 
 cached_threes = {}

@@ -11,5 +11,4 @@ class Human:
 
             if b.is_valid_move(x, y):
                 return (x, y)
-            else:
-                print('Invalid move. Try again.')
+            print('Invalid move. Try again.')
