@@ -42,3 +42,8 @@ def test_tss_four_chains():
     # line: [(8, 5), (6, 11), (6, 10), (3, 10), (3, 7)], fails due to string of five threats
     b = Board(b1=446646568701890811025830444473897713664, b2=11683103721656334534779806651777024, turns=20)
     assert not threat_space_search(b, depth=5)
+
+    # FLAW OF THREAT SPACE
+    # (4, 6) allows the opponent to win with seq: [(9, 6), (5, 5), (7, 5), (6, 5), (7, 4)], skipping...
+    # (8, 6) allows the opponent to win with seq: [(4, 6), (2, 4), (5, 8), (4, 8), (3, 8), (4, 7), (4, 5)], skipping...
+    # b = Board(b1=170177529696935300553615692377276547072, b2=2596544574915688414411732583186432, turns=9)

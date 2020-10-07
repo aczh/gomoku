@@ -1,0 +1,42 @@
+.board-grid {
+    position: absolute;
+    width: 800px;
+    height: 800px;
+    display: grid;
+	margin-bottom: 0px;
+	grid-gap: 1px;
+}
+
+.lines {
+    grid-template-rows: repeat(16, 50px);
+    grid-template-columns: repeat(16, 50px);
+    z-index: -1;
+}
+
+.pieces {
+    grid-template-rows: repeat(15, 50px);
+    grid-template-columns: repeat(15, 50px);
+    z-index: 1;
+    left: 40px;
+    top: 40px;
+}
+
+.cell-lines {
+    outline: 2px solid #a0d2eb;
+}
+
+
+.circle {
+    z-index: 4;
+    height: 35px;
+    width: 35px;
+    border-radius: 100%;
+}
+
+.circle.p1 {
+    background-color: #a28089;
+}
+
+.circle.p2 {
+    background-color: BLACK;
+}

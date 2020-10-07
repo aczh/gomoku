@@ -62,7 +62,7 @@ def confirm_winning_line(b, threats):
         if not confirm_winning_line(_b, threats[1:]): return False
     return True
 
-def threat_space_search(b, current=True, depth=10, max_seqs=1, VERBOSE=0):
+def threat_space_search(b, current=True, depth=7, max_seqs=1, VERBOSE=0):
     '''Implementation of Victor Allis's threat space search.
 
     Parameters
@@ -89,6 +89,8 @@ def threat_space_search(b, current=True, depth=10, max_seqs=1, VERBOSE=0):
         nonlocal terminated_nodes
         nonlocal execs
 
+        from .. utils import to_row
+
         if depth <= 0:
             terminated_nodes += 1
             return
@@ -110,10 +112,11 @@ def threat_space_search(b, current=True, depth=10, max_seqs=1, VERBOSE=0):
         # search all dependent threats
         # dependent threats are threats whose gain square lies in the rest squares of our previous threat
         # if moves is empty, consider all threats
-        if len(moves) > 0:
+        if moves:
             dependent = [t for t in threats if moves[-1].gain_square in t.rest_squares]
         else:
             dependent = threats
+
         for t in dependent:
             # play gain square, play all cost squares
             _b = b.copy()
