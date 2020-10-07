@@ -11,6 +11,7 @@ class Game:
         self.p1 = p1
         self.p2 = p2
         self.b = Board()
+        self.history = []
 
     def on_win(self):
         print('We have a winner!')
@@ -39,6 +40,7 @@ class Game:
                 move = to_row(move)
 
             self.b.move(*move)
+            self.history.append(move)
             if verbose:
                 print('\n====================================================================')
                 print(f'Player {self.b.turns % 2} placed their piece at {move[0]}, {move[1]}')

@@ -79,8 +79,8 @@ class ThreatSpace:
                     workable_moves.add(t.gain_square)
                     if t.type == ThreatType.STRAIGHT_FOUR:
                         workable_moves.update([sq for sq in t.rest_squares if b.is_valid_index(sq)])
-                        workable_moves.add(2 * t.rest_squares[0] - t.rest_squares[1])
-                        workable_moves.add(2 * t.rest_squares[2] - t.rest_squares[1])
+                        workable_moves.add(t.rest_squares[0] - t.inc)
+                        workable_moves.add(t.rest_squares[2] + t.inc)
                     else:
                         workable_moves.update(t.cost_squares)
 
