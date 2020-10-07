@@ -1,6 +1,8 @@
 allentest.py
 
+# node/webpack
 node_modules
+*/dist/bundle.js
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -11,5 +13,4 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 .pytest_cache/

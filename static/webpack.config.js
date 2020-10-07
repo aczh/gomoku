@@ -1,5 +1,12 @@
+const webpack = require('webpack');
+
 module.exports = {
     entry: './src/index.js',
+    output: {
+        path: __dirname + '/build',
+        publicPath: '/',
+        filename: 'bundle.js'
+    },
     module: {
         rules: [
             {
@@ -17,12 +24,11 @@ module.exports = {
     resolve: {
         extensions: ['*', '.js', '.jsx']
     },
-    output: {
-        path: __dirname + '/dist',
-        publicPath: '/',
-        filename: 'bundle.js'
-    },
     devServer: {
-        contentBase: './dist'
-    }
+        contentBase: './build',
+        hot: true
+    },
+    plugins: [
+      new webpack.HotModuleReplacementPlugin()
+    ],
 };

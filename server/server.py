@@ -5,7 +5,7 @@ from api.user import api as user
 from api.game import api as game
 
 # initialize flask
-app = Flask(__name__, static_folder='../static/dist', template_folder='../static/dist', static_url_path="")
+app = Flask(__name__, static_folder='../static/build', template_folder='../static/public')
 app.register_blueprint(user)
 app.register_blueprint(game)
 
