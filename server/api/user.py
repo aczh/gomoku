@@ -1,12 +1,12 @@
 from flask import Blueprint, request
-from models.user import User
+from models import User
 
-api = Blueprint('users', __name__)
+api = Blueprint('user', __name__)
 
 @api.route('/user', methods=["POST"])
 def create_user():
     user = User(**request.args.to_dict()).save()
-    return {}
+    return user.to_json()
 
 @api.route('/user', methods=["GET"])
 def get_users():

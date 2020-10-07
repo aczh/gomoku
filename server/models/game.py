@@ -3,6 +3,10 @@ from . base import Base
 
 class Game(Base):
     board_size = me.IntField(default=15)
-    board1 = me.IntField(default=0)
-    board2 = me.IntField(default=1)
-    moves = me.ListFIeld(me.IntField())
+    board1 = me.StringField(default="0", max_length=100)
+    board2 = me.StringField(default="0", max_length=100)
+    turns = me.IntField(default=0)
+    moves = me.ListField(me.IntField())
+
+    player1_id = me.ReferenceField('User')
+    player2_id = me.ReferenceField('User')
