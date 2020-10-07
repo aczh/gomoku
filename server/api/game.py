@@ -25,7 +25,7 @@ def make_move(id):
     game_json = json.loads(game.to_json())
     b = Board(b1=int(game_json['board1']), b2=int(game_json['board2']), turns=int(game_json['turns']))
     b.move(row, col)
-    game.update(board1=str(b.b1), board2=str(b.b2), turns=b.turns)
+    game.update(board1=bin(b.b1)[2:], board2=bin(b.b2)[2:], turns=b.turns)
     return game.to_json()
 
 @api.route('/game/<id>/threat_space_move', methods=["PUT"])
@@ -37,5 +37,5 @@ def threat_space_move(id):
     move = ts.make_move(b)
     b.move_index(move)
     print(b)
-    game.update(board1=str(b.b1), board2=str(b.b2), turns=b.turns)
+    game.update(board1=bin(b.b1)[2:], board2=bin(b.b2)[2:], turns=b.turns)
     return game.to_json()

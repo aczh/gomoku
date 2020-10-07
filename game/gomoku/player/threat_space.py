@@ -67,11 +67,15 @@ class ThreatSpace:
             if VERBOSE: print(f'Winning line being played: {[to_row(t.gain_square) for t in moves[0]]}')
             self.winning_line = moves[0][::-1]
             return self.winning_line.pop().gain_square
+        else:
+            if VERBOSE: print(f'Winning line not found...')
 
         # # search for winning line in opponent's board
-        moves = threat_space_search(b, current=False, max_seqs=5, VERBOSE=VERBOSE)
+        moves = threat_space_search(b, current=False, max_seqs=1, VERBOSE=VERBOSE)
         limit_moves = None
-        if moves:
+        if not moves:
+            print('Enemy winning line not found...')
+        elif moves:
             for seq in moves:
                 workable_moves = set()
                 if VERBOSE: print(f'Enemy winning seq------------')
@@ -102,6 +106,11 @@ class ThreatSpace:
             _b.force_index(move)
             if VERBOSE: print(f'Searching {to_row(move)}')
 
+            tss = threat_space_search(_b, VERBOSE=VERBOSE, current=False)
+            if tss:
+                if VERBOSE: print(f'{to_row(move)} allows the opponent to win with seq: {[to_row(t.gain_square) for t in tss[0]]}, skipping...')
+                continue
+
             # TODO: if no threatening, sort by terminated_nodes
             tss = threat_space_search(_b, VERBOSE=VERBOSE)
             if tss:
@@ -110,10 +119,11 @@ class ThreatSpace:
                 if VERBOSE: print(f'Threatening line: {[to_row(t) for t in moves]}')
                 for move in moves:
                     threatening_moves[move] += 1
+
         if threatening_moves:
             best_threatening = [(v, k) for k, v in threatening_moves.items() if k in best_moves]
             best_threatening.sort(reverse=True)
-            if VERBOSE: print(f'Threatening line: {best_threatening}')
+            if VERBOSE: print(f'Best threatening moves: {best_threatening}')
             return best_threatening[0][1]
         if VERBOSE: print('Random move...')
         return random.choice(best_moves[:3])
