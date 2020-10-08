@@ -1,10 +1,8 @@
 from flask_socketio import SocketIO, emit, join_room
-from gomoku.player import ThreatSpace
-
+from gomoku import Game
+from gomoku.player import HumanSocket, Simple, ThreatSpace
 socket = SocketIO()
 
-from gomoku.game import Game
-from gomoku.player import HumanSocket, Simple, ThreatSpace
 
 
 games = {}

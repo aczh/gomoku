@@ -1,4 +1,4 @@
-from gomoku.board import Board
+from gomoku import Board
 from gomoku.threat.threat_space import threat_space_search
 
 def test_tss_1():

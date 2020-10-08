@@ -1,4 +1,4 @@
-from gomoku.board import Board
+from gomoku import Board
 from gomoku.threat.threat_search import has_five
 
 def test_win_h():
