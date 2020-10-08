@@ -11,6 +11,10 @@ class ThreatSpace:
     def __init__(self):
         self.winning_line = []
 
+    def request_move(self, b, game):
+        move = self.make_move(b)
+        game.make_move(move)
+
     def score_moves(self, b, limit_moves=None):
         if not limit_moves:
             limit_moves = self.valid_moves(b)
