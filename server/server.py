@@ -1,6 +1,7 @@
-from flask import Flask, render_template
 import mongoengine as me
+from flask import Flask, render_template
 
+from socket_server import socket
 from api.user import api as user
 from api.game import api as game
 
@@ -12,6 +13,10 @@ app.register_blueprint(game)
 # connect mongoengine
 me.connect('gomoku')
 
+# connect socketio
+socket.init_app(app)
+
+# serve webpack bundle
 @app.route('/', methods=["GET"])
 def serve_bundle():
     return render_template('index.html')

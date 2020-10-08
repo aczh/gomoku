@@ -28,8 +28,15 @@
 
 .circle {
     z-index: 4;
-    background-color: #a28089;
     height: 35px;
     width: 35px;
     border-radius: 100%;
+}
+
+.circle.p1 {
+    background-color: #a28089;
+}
+
+.circle.p2 {
+    background-color: BLACK;
 }
