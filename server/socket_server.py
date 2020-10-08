@@ -3,16 +3,19 @@ from gomoku.player import ThreatSpace
 
 socket = SocketIO()
 
-from . board import Board
-from . threat.threat_search import has_five
-from . utils import to_row
+from gomoku.game import Game
+from gomoku.player import HumanSocket, Simple, ThreatSpace
 
+
+games = {}
 
 @socket.on('connect')
 def on_connect():
-    print('user connected')
+    print('User connected')
 
-@socket.on('move_made')
-def on_move(data):
-    print("MOOOOOVE")
-    print(data.get('move'))
+@socket.on('start_game')
+def start_game(data):
+    username = data.get('username')
+    print(f'Starting game for user: {username}')
+    games[username] = Game(HumanSocket(socket), ThreatSpace())
+    games[username].play()
