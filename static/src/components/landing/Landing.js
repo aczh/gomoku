@@ -1,25 +1,25 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Button from '@material-ui/core/Button';
+import Game from '../game'
+import About from '../about'
 
-class Landing extends React.Component {
-    constructor(props){
-        super(props);
+const Landing = ({page}) => {
+    let contents = null
+    if (page == 'about'){
+        contents = <About/>
+    } else if (page == 'play'){
+        contents = <Game/>
+    } else{
+        contents = `Invalid page ${page}`
     }
-    render(){
-        return (
-            <div>
-                  {this.props.page}
-            </div>
-        )
-
-    }
+    return (
+        <div>{contents}</div>
+    )
 }
+
 
 const mapStateToProps = state => ({
     page: state.page.page
 })
-export default connect(
-  mapStateToProps,
-  null,
-)(Landing)
+
+export default connect(mapStateToProps, null)(Landing)

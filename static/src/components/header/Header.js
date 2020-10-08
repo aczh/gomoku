@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { AppBar, Toolbar, MenuIcon, Typography, Button } from '@material-ui/core'
-import { switchPage } from '../../actions/PageActions'
+import { switchPage } from '../../actions/Actions'
 import '../../styles/header.css'
 
 const Header = ({switchPage}) => {
     return (
-        <div>
+        <div className='header'>
             <AppBar position="static">
                 <Toolbar>
                     <Button color="inherit" className='header-button' onClick={() => switchPage('about')}>

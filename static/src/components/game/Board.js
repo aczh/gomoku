@@ -6,7 +6,7 @@ import io from 'socket.io-client'
 const socket = io('http://localhost:5000')
 
 
-class Board extends React.Component {
+export default class Board extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -19,7 +19,7 @@ class Board extends React.Component {
     }
 
     componentDidMount(){
-        socket.emit('start_game', {username: new Date().getTime()})
+        socket.emit('start_game', {username: this.props.username})
         socket.on('request_move', (data) => {
             this.setState({
                 p1: data.p1,
@@ -67,35 +67,32 @@ class Board extends React.Component {
         let board_body = []
         for (let r = 0; r < 16; r++){
             for (let c = 0; c < 16; c++){
-                board_body.push(<div class='cell-lines'></div>)
+                board_body.push(<div key={`line${r} ${c}`} className='cell-lines'></div>)
             }
         }
 
         let circles = []
-        for (let r = 0; r < 15; r++){
-            for (let c = 0; c < 15; c++){
-                let circleClass = 'circle'
-                let index = r * 15 + c
-                if (index <= this.state.p1.length && this.state.p1.charAt(index) == '1'){
-                    circleClass = 'circle p1'
-                } else if (index <= this.state.p2.length && this.state.p2.charAt(index) == '1'){
-                    circleClass = 'circle p2'
-                }
-
-                let onClick = ''
-                if (this.state.should_move){
-                    onClick = () => this.move(index)
-                }
-                circles.push(<div class={circleClass} onClick={onClick}></div>)
+        for (let index = 0; index < 225; index++){
+            let circleClass = 'circle'
+            if (index <= this.state.p1.length && this.state.p1.charAt(index) == '1'){
+                circleClass = 'circle p1'
+            } else if (index <= this.state.p2.length && this.state.p2.charAt(index) == '1'){
+                circleClass = 'circle p2'
             }
+
+            let onClick = null
+            if (this.state.should_move){
+                onClick = () => this.move(index)
+            }
+            circles.push(<div key={`piece${index}`} className={circleClass} onClick={onClick}></div>)
         }
 
         return (
             <div>
-                <div class='board-grid lines'>
+                <div className='board-grid lines'>
                     {board_body}
                 </div>
-                <div class='board-grid pieces'>
+                <div className='board-grid pieces'>
                     {circles}
                 </div>
             </div>
@@ -103,5 +100,3 @@ class Board extends React.Component {
 
     }
 }
-
-export default Board

@@ -14,6 +14,9 @@ def on_connect():
 @socket.on('start_game')
 def start_game(data):
     username = data.get('username')
-    print(f'Starting game for user: {username}')
-    games[username] = Game(HumanSocket(socket), ThreatSpace())
+    if username in games:
+        print(f'Game already started for user: {username}')
+    else:
+        games[username] = Game(ThreatSpace(), HumanSocket(socket))
+        # games[username] = Game(HumanSocket(socket), ThreatSpace())
     games[username].play()
