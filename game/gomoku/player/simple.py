@@ -2,6 +2,10 @@ from .. threat.threat_search import get_threats
 import random
 
 class Simple:
+    def request_move(self, b, game):
+        move = self.make_move(b)
+        game.make_move(move)
+        
     def make_move(self, b):
         # get and sort best moves of own board/enemey
         m_threats = get_threats(b)

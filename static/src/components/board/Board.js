@@ -5,57 +5,88 @@ import io from 'socket.io-client'
 
 const socket = io('http://localhost:5000')
 
+
 class Board extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            p1: new Set(),
-            p2: new Set(),
+            p1: '0',
+            p2: '0',
             turns: 0,
-            humans: [0],
-            // humans: [1, 2],
+            should_move: false,
         }
+
     }
 
-    move(r, c){
-        let index = r * 15 + c
-        if (this.state.p1.has(index) || this.state.p2.has(index)){
-            return
-        }
-
-        socket.emit('move_made', {move: index})
-        if (this.state.turns % 2 == 0){
-            this.state.p1.add(index)
-        } else{
-            this.state.p2.add(index)
-        }
-
-        this.setState({
-            turns: this.state.turns + 1
+    componentDidMount(){
+        socket.emit('start_game', {username: new Date().getTime()})
+        socket.on('request_move', (data) => {
+            this.setState({
+                p1: data.p1,
+                p2: data.p2,
+                turns: data.turns,
+                should_move: true
+            })
         })
     }
 
-    render(){
+    valid_move = (index) => {
+        if (index <= this.state.p1.length && this.state.p1.charAt(index) == '1'){ return false }
+        if (index <= this.state.p2.length && this.state.p1.charAt(index) == '1'){ return false }
+        return true
+    }
 
+    make_move = (index) => {
+        let p1 = this.state.p1
+        let p2 = this.state.p2
+        if (this.state.turns % 2 == 0){
+            if (index > this.state.p1.length){
+                p1 += '0'.repeat(index - this.state.p1.length)
+            }
+            p1 = p1.substring(0, index) + '1' + p1.substring(index + 1)
+        } else{
+            if (index > this.state.p2.length){
+                p2 += '0'.repeat(index - this.state.p2.length)
+            }
+            p2 = p2.substring(0, index) + '1' + p2.substring(index + 1)
+        }
+        this.setState({
+            p1: p1,
+            p2: p2,
+        })
+    }
+
+    move(index){
+        if (this.valid_move(index)){
+            this.make_move(index)
+            socket.emit('move_made', {move: index})
+        }
+    }
+
+    render(){
         let board_body = []
-        let circles = []
         for (let r = 0; r < 16; r++){
             for (let c = 0; c < 16; c++){
                 board_body.push(<div class='cell-lines'></div>)
-                if (r < 15 && c < 15){
-                    let circleClass = 'circle'
-                    if (this.state.p1.has(r * 15 + c)){
-                        circleClass = 'circle p1'
-                    } else if (this.state.p2.has(r * 15 + c)){
-                        circleClass = 'circle p2'
-                    }
+            }
+        }
 
-                    let onClick = ''
-                    if (this.state.humans.includes(this.state.turns % 2)){
-                        onClick = () => this.move(r, c)
-                    }
-                    circles.push(<div class={circleClass} onClick={onClick}></div>)
+        let circles = []
+        for (let r = 0; r < 15; r++){
+            for (let c = 0; c < 15; c++){
+                let circleClass = 'circle'
+                let index = r * 15 + c
+                if (index <= this.state.p1.length && this.state.p1.charAt(index) == '1'){
+                    circleClass = 'circle p1'
+                } else if (index <= this.state.p2.length && this.state.p2.charAt(index) == '1'){
+                    circleClass = 'circle p2'
                 }
+
+                let onClick = ''
+                if (this.state.should_move){
+                    onClick = () => this.move(index)
+                }
+                circles.push(<div class={circleClass} onClick={onClick}></div>)
             }
         }
 
