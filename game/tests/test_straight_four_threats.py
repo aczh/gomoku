@@ -1,4 +1,4 @@
-from gomoku.board import Board
+from gomoku import Board
 from gomoku.threat.threat_search import get_straight_fours
 from gomoku.threat.threat import ThreatType
 
