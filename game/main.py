@@ -6,9 +6,9 @@ from gomoku.player.negamax import Negamax
 from gomoku.board import Board
 
 g = Game(ThreatSpace(), Human())
-# g = Game(ThreatSpace(), ThreatSpace())
-# g = Game(Negamax(), Human())
-g.b = Board(b1=170177529696935300553615692377276547072, b2=2596544577333540053640990932598784, turns=10)
+# g = Game(Simple(), Simple())
+# g = Game(Human(), Human())
+# g = Game(ThreatSpace(), Human())
 # g = Game(Human(), ThreatSpace())
 
 g.play()
