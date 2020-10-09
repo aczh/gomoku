@@ -18,9 +18,5 @@ const Game = ({username}) => {
 const mapStateToProps = state => ({
     username: state.user.username
 })
-const mapDispatchToProps = dispatch =>({
-})
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Game)
+
+export default connect(mapStateToProps, null)(Game)

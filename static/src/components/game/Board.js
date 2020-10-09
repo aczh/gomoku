@@ -5,7 +5,6 @@ import io from 'socket.io-client'
 
 const socket = io('http://localhost:5000')
 
-
 export default class Board extends React.Component {
     constructor(props){
         super(props);
@@ -28,6 +27,17 @@ export default class Board extends React.Component {
                 should_move: true
             })
         })
+        socket.on('game_won', () => {
+            console.log("GAME WON")
+            this.setState({
+                should_move: false,
+            })
+        })
+    }
+
+    componentWillUnmount(){
+        socket.off('request_move')
+        socket.off('game_won')
     }
 
     valid_move = (index) => {

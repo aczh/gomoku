@@ -11,3 +11,7 @@ export function updateGame(p1, p2, turns){
 export function login(username){
     return {type: ACTION.LOGIN, username: username}
 }
+
+export function logout(){
+    return {type: ACTION.LOGOUT}
+}

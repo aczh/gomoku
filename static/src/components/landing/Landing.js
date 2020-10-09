@@ -4,13 +4,14 @@ import Game from '../game'
 import About from '../about'
 
 const Landing = ({page}) => {
-    let contents = null
-    if (page == 'about'){
-        contents = <About/>
-    } else if (page == 'play'){
-        contents = <Game/>
-    } else{
-        contents = `Invalid page ${page}`
+    let contents = `Invalid page ${page}`
+    switch (page){
+        case 'about':
+            contents = <About/>
+            break
+        case 'play':
+            contents = <Game/>
+            break
     }
     return (
         <div>{contents}</div>

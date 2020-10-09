@@ -11,12 +11,20 @@ games = {}
 def on_connect():
     print('User connected')
 
+def on_win(b):
+    socket.emit('game_won')
+    print("WON")
+
+def on_draw(b):
+    socket.emit('game_drawn')
+    print("DRAW")
+
 @socket.on('start_game')
 def start_game(data):
     username = data.get('username')
     if username in games:
         print(f'Game already started for user: {username}')
     else:
-        games[username] = Game(ThreatSpace(), HumanSocket(socket))
+        games[username] = Game(ThreatSpace(), HumanSocket(socket), on_win=on_win, on_draw=on_draw)
         # games[username] = Game(HumanSocket(socket), ThreatSpace())
     games[username].play()
