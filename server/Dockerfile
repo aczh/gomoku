@@ -5,6 +5,7 @@ MAINTAINER Allen Zhang "allenczhang@gmail.com"
 # install dependencies
 RUN apt-get update -y
 RUN apt-get install -y python-pip python3-dev
+RUN apt-get install libgmp3-dev
 
 # copy files
 WORKDIR /app
