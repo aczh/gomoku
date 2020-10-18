@@ -2,21 +2,22 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { TextField, Button } from '@material-ui/core'
 import Board from './Board'
-import Login from '../login'
+import Sidebar from './Sidebar'
 
-const Game = ({username}) => {
-    let contents = <Board username={username}/>
-    if (username === null){
-        contents = <Login/>
-    }
+import io from 'socket.io-client'
 
+const socket = io('http://localhost:5000')
+
+const Game = ({}) => {
     return (
-        <div>{contents}</div>
+        <div>
+            <Board socket={socket}/>
+            <Sidebar socket={socket}/>
+        </div>
     )
 }
 
 const mapStateToProps = state => ({
-    username: state.user.username
 })
 
 export default connect(mapStateToProps, null)(Game)

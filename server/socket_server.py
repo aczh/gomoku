@@ -12,8 +12,11 @@ def on_connect():
     print('User connected')
 
 def on_win(b):
-    socket.emit('game_won')
-    print("WON")
+    socket.emit('game_won', {
+        'p1': bin(b.b1)[2:][::-1],
+        'p2': bin(b.b2)[2:][::-1],
+        'turns': b.turns,
+    })
 
 def on_draw(b):
     socket.emit('game_drawn')
@@ -21,10 +24,10 @@ def on_draw(b):
 
 @socket.on('start_game')
 def start_game(data):
-    username = data.get('username')
-    if username in games:
-        print(f'Game already started for user: {username}')
+    game_id = data.get('game_id')
+    if game_id in games:
+        print(f'Game already started for game_id: {game_id}')
     else:
-        games[username] = Game(ThreatSpace(), HumanSocket(socket), on_win=on_win, on_draw=on_draw)
-        # games[username] = Game(HumanSocket(socket), ThreatSpace())
-    games[username].play()
+        games[game_id] = Game(ThreatSpace(), HumanSocket(socket), on_win=on_win, on_draw=on_draw)
+        # games[game_id] = Game(HumanSocket(socket), ThreatSpace())
+    games[game_id].play()

@@ -1,9 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import '../../styles/board.css'
-import io from 'socket.io-client'
 
-const socket = io('http://localhost:5000')
 
 export default class Board extends React.Component {
     constructor(props){
@@ -18,8 +16,7 @@ export default class Board extends React.Component {
     }
 
     componentDidMount(){
-        socket.emit('start_game', {username: this.props.username})
-        socket.on('request_move', (data) => {
+        this.props.socket.on('request_move', (data) => {
             this.setState({
                 p1: data.p1,
                 p2: data.p2,
@@ -27,17 +24,19 @@ export default class Board extends React.Component {
                 should_move: true
             })
         })
-        socket.on('game_won', () => {
-            console.log("GAME WON")
+        this.props.socket.on('game_won', (data) => {
             this.setState({
-                should_move: false,
+                p1: data.p1,
+                p2: data.p2,
+                turns: data.turns,
+                should_move: false
             })
         })
     }
 
     componentWillUnmount(){
-        socket.off('request_move')
-        socket.off('game_won')
+        this.props.socket.off('request_move')
+        this.props.socket.off('game_won')
     }
 
     valid_move = (index) => {
@@ -69,7 +68,7 @@ export default class Board extends React.Component {
     move(index){
         if (this.valid_move(index)){
             this.make_move(index)
-            socket.emit('move_made', {move: index})
+            this.props.socket.emit('move_made', {move: index})
         }
     }
 
