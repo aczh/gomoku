@@ -4,7 +4,7 @@
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack-dev-server --host 0.0.0.0 --config ./webpack.config.js --mode development"
   },
   "author": "",
   "license": "ISC",
