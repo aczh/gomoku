@@ -1,4 +1,4 @@
-from gomoku.board import Board
+from gomoku import Board
 
 def test_valid_moves():
     b = Board()
