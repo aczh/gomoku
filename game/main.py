@@ -1,14 +1,8 @@
-from gomoku.game import Game
-from gomoku.player.human import Human
-from gomoku.player.simple import Simple
-from gomoku.player.threat_space import ThreatSpace
-from gomoku.player.negamax import Negamax
-from gomoku.board import Board
+from gomoku import Game, Board
+from gomoku.player import Human, Simple, ThreatSpace, Negamax
 
-g = Game(ThreatSpace(), Human())
-# g = Game(Simple(), Simple())
-# g = Game(Human(), Human())
-# g = Game(ThreatSpace(), Human())
-# g = Game(Human(), ThreatSpace())
+p1 = ThreatSpace()
+p2 = Human()
+g = Game(p1, p2)
 
 g.play()
