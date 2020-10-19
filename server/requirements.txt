@@ -3,4 +3,3 @@ mongoengine
 python-dateutil==2.8.1
 flask_socketio
 gomoku==0.1.0
-flask-cors
