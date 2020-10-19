@@ -1,11 +1,7 @@
-.board-centered {
-    margin-left: calc((100vw - 800px) / 2);
-    /* position: fixed;
-    /* margin-left: 800px; */
-    /* float: right; */
-}
 .flex-container {
+    position: relative;
     display: flex;
+    justify-content: space-evenly;
 }
 
 .flex-child {
@@ -15,4 +11,4 @@
 
 .flex-child:first-child {
     margin-right: 20px;
-} 
+}

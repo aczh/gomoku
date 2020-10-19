@@ -1,5 +1,13 @@
-.board-grid {
+.board {
     position: relative;
+    width: 800px;
+    height: 800px;
+    margin-bottom: 0px;
+    padding-right: 30px;
+}
+
+.board-grid {
+    position: absolute;
     width: 800px;
     height: 800px;
     display: grid;
@@ -16,7 +24,7 @@
 .pieces {
     grid-template-rows: repeat(15, 50px);
     grid-template-columns: repeat(15, 50px);
-    z-index: 1;
+    z-index: 0;
     padding-left: 32px;
     padding-top: 32px;
 }
