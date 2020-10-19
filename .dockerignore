@@ -14,3 +14,7 @@ develop-eggs/
 .pytest_cache/
 *.egg-info
 dist/
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+.git
+.gitignore

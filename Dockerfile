@@ -21,6 +21,6 @@ COPY --from=static-build /app/static/public /app/static/public
 RUN pip3 install -r requirements.txt
 
 # run flask server
-EXPOSE 5000
+EXPOSE 80
 ENTRYPOINT [ "python3" ]
 CMD [ "server.py" ]

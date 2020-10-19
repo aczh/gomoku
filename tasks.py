@@ -6,4 +6,4 @@ def build(c):
 
 @task
 def run(c):
-    c.run('docker run -p 5000:5000 gomoku:latest')
+    c.run('docker run -p 80:80 gomoku:latest')
