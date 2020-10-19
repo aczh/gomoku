@@ -1,5 +1,5 @@
 .board-grid {
-    position: absolute;
+    position: relative;
     width: 800px;
     height: 800px;
     display: grid;
@@ -22,7 +22,7 @@
 }
 
 .cell-lines {
-    outline: 2px solid #a0d2eb;
+    outline: 1px solid #bab2b5;
 }
 
 
@@ -34,9 +34,9 @@
 }
 
 .circle.p1 {
-    background-color: #a28089;
+    background-color: #123c69;
 }
 
 .circle.p2 {
-    background-color: BLACK;
+    background-color: #ac3b61;
 }

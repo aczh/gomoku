@@ -7,7 +7,7 @@ import '../../styles/header.css'
 const Header = ({switchPage}) => {
     return (
         <div className='header'>
-            <AppBar position="static">
+            <AppBar position="static" className='header-appbar'>
                 <Toolbar>
                     <Button color="inherit" className='header-button' onClick={() => switchPage('about')}>
                         <Typography variant="h6">About</Typography>

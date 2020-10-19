@@ -10,3 +10,7 @@
 .header {
     padding-bottom: 40px;
 }
+
+.header-appbar {
+    background-color: #3d456c !important;
+}

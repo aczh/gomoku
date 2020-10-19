@@ -97,7 +97,7 @@ export default class Board extends React.Component {
         }
 
         return (
-            <div>
+            <div className='board-centered'>
                 <div className='board-grid lines'>
                     {board_body}
                 </div>
