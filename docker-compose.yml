@@ -1,0 +1,6 @@
+version: "3.8"
+services:
+    gomoku-server:
+        build: .
+        ports:
+            - "5000:80"
