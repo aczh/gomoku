@@ -3,8 +3,6 @@ from gomoku import Game
 from gomoku.player import HumanSocket, Simple, ThreatSpace
 socket = SocketIO()
 
-
-
 games = {}
 
 @socket.on('connect')

@@ -4,7 +4,7 @@ setup(
     name='gomoku',
     description='Gomoku AI',
     author='Allen Zhang',
-    version='v0.1.0',
+    version='0.1.0',
     packages=[
         'gomoku',
         'gomoku.player',
