@@ -1,0 +1,16 @@
+# node/webpack
+node_modules
+*/dist/bundle.js
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+.pytest_cache/
+*.egg-info
+dist/

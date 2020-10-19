@@ -1,10 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import '../../styles/board.css'
-import io from 'socket.io-client'
-
-const socket = io('http://localhost:5000')
-
 
 class Board extends React.Component {
     constructor(props){
@@ -19,8 +15,8 @@ class Board extends React.Component {
     }
 
     componentDidMount(){
-        socket.emit('start_game', {username: new Date().getTime()})
-        socket.on('request_move', (data) => {
+        this.props.socket.emit('start_game', {username: new Date().getTime()})
+        this.props.socket.on('request_move', (data) => {
             this.setState({
                 p1: data.p1,
                 p2: data.p2,
@@ -59,7 +55,7 @@ class Board extends React.Component {
     move(index){
         if (this.valid_move(index)){
             this.make_move(index)
-            socket.emit('move_made', {move: index})
+            this.props.socket.emit('move_made', {move: index})
         }
     }
 
