@@ -13,7 +13,6 @@ const Sidebar = ({setGameID, socket, game_id}) => {
 
     useEffect(() => {
         if (game_id !== null){
-            console.log(game_id)
             socket.emit('start_game', {game_id: game_id})
         }
     })

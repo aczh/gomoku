@@ -10,6 +10,15 @@ VERBOSE=1
 
 class Game:
     def __init__(self, p1, p2, on_win=None, on_draw=None):
+        '''Game instance.
+
+        Parameters
+        ----------
+        p1: player 1 object.
+        p2: player 2 object.
+        on_win: function to be called once a player has won.
+        on_draw: function to be called if the game is drawn.
+        '''
         self.p1 = p1
         self.p2 = p2
         self.b = Board()
@@ -18,6 +27,7 @@ class Game:
         self.on_draw = on_draw
 
     def play(self):
+        '''Begins the game. Requests a move from the current player.'''
         if VERBOSE:
             print('\n====================================================================')
             print('Player {}\'s turn to move.'.format(self.b.turns % 2 + 1))
@@ -29,6 +39,7 @@ class Game:
             self.p2.request_move(self.b, self)
 
     def make_move(self, move):
+        '''Makes a move, updates history, checks for wins/draws, then continues the game.'''
         if isinstance(move, int):
             move = to_row(move)
         self.b.move(*move)

@@ -5,10 +5,6 @@ socket = SocketIO()
 
 games = {}
 
-@socket.on('connect')
-def on_connect():
-    print('User connected')
-
 def on_win(b):
     socket.emit('game_won', {
         'p1': bin(b.b1)[2:][::-1],
@@ -27,5 +23,4 @@ def start_game(data):
         print(f'Game already started for game_id: {game_id}')
     else:
         games[game_id] = Game(ThreatSpace(), HumanSocket(socket), on_win=on_win, on_draw=on_draw)
-        # games[game_id] = Game(HumanSocket(socket), ThreatSpace())
     games[game_id].play()

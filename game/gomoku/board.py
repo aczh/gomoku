@@ -1,6 +1,6 @@
 '''
 Bitboard implementation.
-Holds 2 integers, b1 and b2 for player 1 and player 2.
+Holds 2 integers, b1 and b2, which represent the boards of players 1 and 2.
 '''
 
 import gmpy2
