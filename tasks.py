@@ -3,7 +3,6 @@ from invoke import task
 @task
 def build(c, prod=False):
     env = 'production' if prod else 'development'
-    print(f'docker build --tag gomoku:latest --build-arg "ENV={env}" .')
     c.run(f'docker build --tag gomoku:latest --build-arg "ENV={env}" .')
 
 @task(build)
