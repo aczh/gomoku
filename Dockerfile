@@ -3,7 +3,7 @@ WORKDIR /app/static
 COPY ./static .
 RUN npm install
 ARG ENV
-RUN if [ "x$ENV" = "development" ]; then npm run build ; else npm run prod ; fi
+RUN if [ "$ENV" = "development" ]; then npm run build ; else npm run prod ; fi
 
 FROM python:3.7-slim-buster
 
