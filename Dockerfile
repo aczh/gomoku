@@ -12,6 +12,11 @@ RUN apt-get update -y
 RUN apt-get install -y python-pip python3-dev
 RUN apt-get install -y libgmp3-dev libmpc-dev libmpfr-dev
 
+# install gomoku
+WORKDIR /app/game
+COPY ./game .
+python -m pip install .
+
 # copy files
 WORKDIR /app/server
 COPY ./server .
