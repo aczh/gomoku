@@ -30,13 +30,4 @@ module.exports = {
     resolve: {
         extensions: ['*', '.js', '.jsx']
     },
-    devServer: {
-        contentBase: './build',
-        hot: true
-    },
-    plugins: [
-      new webpack.HotModuleReplacementPlugin()
-    ],
-    devtool: 'inline-source-map',
-    mode: 'development',
 };
