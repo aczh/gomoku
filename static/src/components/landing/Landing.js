@@ -2,7 +2,7 @@ import React from 'react'
 import { AppBar, Typography, Button, Tabs, Tab, Box } from '@material-ui/core'
 import Game from '../game'
 import About from '../about'
-import '../../styles/header.css'
+import '../../styles/landing.css'
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -36,10 +36,10 @@ const Landing = ({}) => {
             <AppBar position="static" className='header-appbar'>
                 <Tabs value={value} onChange={handleChange}>
                     <Tab label={
-                        <Typography component={'div'} variant="h6">About</Typography>
+                        <Typography variant="h6">About</Typography>
                     }/>
                     <Tab label={
-                        <Typography component={'div'} variant="h6">Play</Typography>
+                        <Typography variant="h6">Play</Typography>
                     }/>
                 </Tabs>
             </AppBar>

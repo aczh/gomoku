@@ -24,4 +24,5 @@ class HumanSocket:
             'p1': bin(b.b1)[2:][::-1],
             'p2': bin(b.b2)[2:][::-1],
             'turns': b.turns,
+            'history': game.history,
         })

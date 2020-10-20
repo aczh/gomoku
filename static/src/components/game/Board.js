@@ -1,3 +1,4 @@
+
 import React from 'react'
 import { connect } from 'react-redux'
 import '../../styles/board.css'
@@ -11,6 +12,7 @@ export default class Board extends React.Component {
             p2: '0',
             turns: 0,
             should_move: false,
+            history: [],
         }
 
     }
@@ -21,7 +23,8 @@ export default class Board extends React.Component {
                 p1: data.p1,
                 p2: data.p2,
                 turns: data.turns,
-                should_move: true
+                should_move: true,
+                history: data.history,
             })
         })
         this.props.socket.on('game_won', (data) => {
@@ -62,6 +65,8 @@ export default class Board extends React.Component {
         this.setState({
             p1: p1,
             p2: p2,
+            should_move: false,
+            history: [...this.state.history, [Math.floor(index / 15), index % 15]],
         })
     }
 
@@ -88,6 +93,13 @@ export default class Board extends React.Component {
             } else if (index <= this.state.p2.length && this.state.p2.charAt(index) == '1'){
                 circleClass = 'circle p2'
             }
+
+            try{
+                if (index === this.state.history[this.state.history.length - 1][0] * 15 + this.state.history[this.state.history.length - 1][1]){
+                    circleClass += ' highlight'
+                }
+            } catch{}
+
 
             let onClick = null
             if (this.state.should_move){

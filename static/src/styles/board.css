@@ -48,3 +48,7 @@
 .circle.p2 {
     background-color: #ac3b61;
 }
+
+.highlight {
+    outline: 2px solid black;
+}
