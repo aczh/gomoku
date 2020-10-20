@@ -7,7 +7,7 @@ const About = ({}) => {
     return (
         <div className='about-text'>
             <Typography className='header' variant="h5">
-                Instructions
+                Rules
             </Typography>
             <Typography className='body' variant="body1">
                 Gomoku is a two player game traditionally played on a 15x15 board.
