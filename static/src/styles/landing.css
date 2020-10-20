@@ -1,0 +1,20 @@
+.header-button {
+    padding-right: 20px;
+}
+
+.float-right {
+    float: right;
+    margin-right: 20px;
+}
+
+.header {
+    padding-bottom: 40px;
+}
+
+.header-appbar {
+    background-color: #3d456c !important;
+}
+
+.PrivateTabIndicator-colorSecondary-3 {
+    background-color: #ac3b61 !important;
+}

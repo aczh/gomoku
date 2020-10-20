@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { connect } from 'react-redux'
 import { setGameID } from '../../actions/Actions'
 import { TextField, Button } from '@material-ui/core'
+import '../../styles/sidebar.css'
 
 const Sidebar = ({setGameID, socket, game_id}) => {
     const new_game = () => {
@@ -22,10 +23,12 @@ const Sidebar = ({setGameID, socket, game_id}) => {
     })
 
     return (
-        <div style={{float: 'right'}}>
-            <Button onClick={() => new_game()}>
-                New Game
-            </Button>
+        <div className='sidebar'>
+            <div className='row'>
+                <Button variant='contained' color='primary' disableElevation onClick={() => new_game()}>
+                    New Game
+                </Button>
+            </div>
         </div>
     )
 }
