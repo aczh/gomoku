@@ -21,13 +21,7 @@ This folder contains a simple flask server that serves our react front-end.
 There are several ways to start this full stack application.
 Once started, the app can be located at http://localhost:80.
 
-Via docker-compose:
-```console
-docker-compose build
-docker-compose up
-```
-
-Via invoke:
+Invoke + Docker
 ```console
 pip install invoke
 inv build run
