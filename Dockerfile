@@ -15,7 +15,7 @@ RUN apt-get install -y libgmp3-dev libmpc-dev libmpfr-dev
 # install gomoku
 WORKDIR /app/game
 COPY ./game .
-python -m pip install .
+RUN pip3 install .
 
 # copy files
 WORKDIR /app/server
