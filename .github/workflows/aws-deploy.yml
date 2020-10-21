@@ -7,11 +7,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clean and checkout
+      - name: Clean
         uses: garygrossgarten/github-action-ssh@release
         with:
           command: |
-            sudo docker kill $(sudo docker ps -q) && rm -rf gomoku && git clone https://github.com/aczh/gomoku.git && cd gomoku && git checkout ${GITHUB_REF##*/}
+            rm -rf gomoku && sudo docker kill $(sudo docker ps -q)
+          host: ec2-52-72-176-34.compute-1.amazonaws.com
+          username: ubuntu
+          passphrase: ${{ secrets.AWS_PASSWORD }}
+          privateKey: ${{ secrets.AWS_SSH_SECRET_KEY}}
+      - name: Checkout
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: |
+            git clone https://github.com/aczh/gomoku.git && cd gomoku && git checkout ${GITHUB_REF##*/}
           host: ec2-52-72-176-34.compute-1.amazonaws.com
           username: ubuntu
           passphrase: ${{ secrets.AWS_PASSWORD }}
