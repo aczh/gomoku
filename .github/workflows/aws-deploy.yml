@@ -17,7 +17,7 @@ jobs:
           host: ec2-52-72-176-34.compute-1.amazonaws.com
           username: ubuntu
           key: ${{ secrets.AWS_SSH_SECRET_KEY}}
-          command_timeout: "1m"
+          command_timeout: "5m"
           script: |
             sudo docker kill $(sudo docker ps -q)
             git clone https://github.com/aczh/gomoku.git
