@@ -1,0 +1,26 @@
+name: Command via SSH
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: clean, checkout, deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ec2-52-72-176-34.compute-1.amazonaws.com
+          username: ubuntu
+          key: ${{ secrets.AWS_SSH_SECRET_KEY}}
+          command_timeout: "5m"
+          script: |
+            sudo docker kill $(sudo docker ps -q)
+            git clone https://github.com/aczh/gomoku.git
+            cd gomoku
+            git checkout ${{github.sha}}
+            nohup sudo inv run &>/dev/null &
