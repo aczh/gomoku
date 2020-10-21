@@ -10,7 +10,12 @@ jobs:
       - name: Deploy to AWS
         uses: garygrossgarten/github-action-ssh@release
         with:
-          command: ls -a
+          command: |
+          sudo pkill python
+          rm -rf gomoku
+          git clone https://github.com/aczh/gomoku.git
+          git checkout ${GITHUB_REF}
+          sudo inv build run
           host: ec2-52-72-176-34.compute-1.amazonaws.com
           username: ubuntu
           passphrase: ${{ secrets.AWS_PASSWORD }}
