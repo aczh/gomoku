@@ -14,6 +14,7 @@ jobs:
             sudo pkill -9 -f python3 &&
             rm -rf gomoku &&
             git clone https://github.com/aczh/gomoku.git &&
+            echo ${GITHUB_REF} && 
             cd gomoku &&
             git checkout ${GITHUB_REF} &&
             sudo inv build run
