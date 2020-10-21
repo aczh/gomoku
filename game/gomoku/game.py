@@ -52,9 +52,9 @@ class Game:
             print(self.b)
 
         if has_five(self.b) or has_five(self.b, current=False):
-            self.on_win(self.b)
+            self.on_win(self)
         elif self.b.turns == self.b.size * self.b.size:
-            self.on_draw(self.b)
+            self.on_draw(self)
         else:
             self.play()
 

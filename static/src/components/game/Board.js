@@ -1,123 +1,89 @@
-
 import React from 'react'
 import { connect } from 'react-redux'
 import '../../styles/board.css'
+import { updateGame } from '../../actions/Actions'
 
-
-export default class Board extends React.Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            p1: '0',
-            p2: '0',
-            turns: 0,
-            should_move: false,
-            history: [],
+const Board = ({socket, updateGame, p1, p2, turns, history}) => {
+    const move = (index) => {
+        if (valid_move(index)){
+            make_move(index)
+            socket.emit('move_made', {move: index})
         }
-
     }
 
-    componentDidMount(){
-        this.props.socket.on('request_move', (data) => {
-            this.setState({
-                p1: data.p1,
-                p2: data.p2,
-                turns: data.turns,
-                should_move: true,
-                history: data.history,
-            })
-        })
-        this.props.socket.on('game_won', (data) => {
-            this.setState({
-                p1: data.p1,
-                p2: data.p2,
-                turns: data.turns,
-                should_move: false
-            })
-        })
-    }
-
-    componentWillUnmount(){
-        this.props.socket.off('request_move')
-        this.props.socket.off('game_won')
-    }
-
-    valid_move = (index) => {
-        if (index <= this.state.p1.length && this.state.p1.charAt(index) == '1'){ return false }
-        if (index <= this.state.p2.length && this.state.p1.charAt(index) == '1'){ return false }
+    const valid_move = (index) => {
+        if (index <= p1.length && p1.charAt(index) == '1'){ return false }
+        if (index <= p2.length && p1.charAt(index) == '1'){ return false }
         return true
     }
 
-    make_move = (index) => {
-        let p1 = this.state.p1
-        let p2 = this.state.p2
-        if (this.state.turns % 2 == 0){
-            if (index > this.state.p1.length){
-                p1 += '0'.repeat(index - this.state.p1.length)
+    const make_move = (index) => {
+        if (turns % 2 == 0){
+            if (index > p1.length){
+                p1 += '0'.repeat(index - p1.length)
             }
             p1 = p1.substring(0, index) + '1' + p1.substring(index + 1)
         } else{
-            if (index > this.state.p2.length){
-                p2 += '0'.repeat(index - this.state.p2.length)
+            if (index > p2.length){
+                p2 += '0'.repeat(index - p2.length)
             }
             p2 = p2.substring(0, index) + '1' + p2.substring(index + 1)
         }
-        this.setState({
-            p1: p1,
-            p2: p2,
-            should_move: false,
-            history: [...this.state.history, [Math.floor(index / 15), index % 15]],
-        })
+        updateGame(p1, p2, turns + 1, [...history, [Math.floor(index / 15), index % 15]])
     }
 
-    move(index){
-        if (this.valid_move(index)){
-            this.make_move(index)
-            this.props.socket.emit('move_made', {move: index})
-        }
-    }
-
-    render(){
+    const construct_board = () => {
         let board_body = []
         for (let r = 0; r < 16; r++){
             for (let c = 0; c < 16; c++){
                 board_body.push(<div key={`line${r} ${c}`} className='cell-lines'></div>)
             }
         }
+        return board_body
+    }
 
+    const construct_pieces = () => {
         let circles = []
         for (let index = 0; index < 225; index++){
             let circleClass = 'circle'
-            if (index <= this.state.p1.length && this.state.p1.charAt(index) == '1'){
-                circleClass = 'circle p1'
-            } else if (index <= this.state.p2.length && this.state.p2.charAt(index) == '1'){
-                circleClass = 'circle p2'
-            }
+            if (index <= p1.length && p1.charAt(index) == '1'){ circleClass = 'circle p1' }
+            else if (index <= p2.length && p2.charAt(index) == '1'){ circleClass = 'circle p2' }
 
             try{
-                if (index === this.state.history[this.state.history.length - 1][0] * 15 + this.state.history[this.state.history.length - 1][1]){
+                if (index === history[history.length - 1][0] * 15 + history[history.length - 1][1]){
                     circleClass += ' highlight'
                 }
             } catch{}
 
 
             let onClick = null
-            if (this.state.should_move){
-                onClick = () => this.move(index)
+            if (turns % 2 === 1){
+                onClick = () => move(index)
             }
             circles.push(<div key={`piece${index}`} className={circleClass} onClick={onClick}></div>)
         }
-
-        return (
-            <div className='board'>
-                <div className='board-grid lines'>
-                    {board_body}
-                </div>
-                <div className='board-grid pieces'>
-                    {circles}
-                </div>
-            </div>
-        )
-
+        return circles
     }
+
+    return (
+        <div className='board'>
+            <div className='board-grid lines'>
+                {construct_board()}
+            </div>
+            <div className='board-grid pieces'>
+                {construct_pieces()}
+            </div>
+        </div>
+    )
 }
+
+const mapStateToProps = state => ({
+    p1: state.game.p1,
+    p2: state.game.p2,
+    turns: state.game.turns,
+    history: state.game.history,
+})
+const mapDispatchToProps = dispatch =>({
+    updateGame: (p1, p2, turns, history) => dispatch(updateGame(p1, p2, turns, history))
+})
+export default connect(mapStateToProps, mapDispatchToProps)(Board)

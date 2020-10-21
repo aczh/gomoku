@@ -215,3 +215,10 @@ def has_five(board, current=True):
         bits = bits & threat_mask[5][inc]
         if bits: return True
     return False
+
+def who_won(b):
+    if has_five(b):
+        return 2 - b.turns % 2
+    if has_five(b, current=False):
+        return 2 - (1 + b.turns % 2)
+    return -1
