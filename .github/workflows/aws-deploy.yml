@@ -7,24 +7,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clean
-        uses: garygrossgarten/github-action-ssh@release
+      - name: clean and checkout
+        uses: appleboy/ssh-action@master
         with:
-          command: |
-            rm -rf gomoku && sudo docker kill $(sudo docker ps -q)
           host: ec2-52-72-176-34.compute-1.amazonaws.com
           username: ubuntu
-          passphrase: ${{ secrets.AWS_PASSWORD }}
-          privateKey: ${{ secrets.AWS_SSH_SECRET_KEY}}
-      - name: Checkout
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          command: |
-            git clone https://github.com/aczh/gomoku.git && cd gomoku && git checkout ${GITHUB_REF##*/}
-          host: ec2-52-72-176-34.compute-1.amazonaws.com
-          username: ubuntu
-          passphrase: ${{ secrets.AWS_PASSWORD }}
-          privateKey: ${{ secrets.AWS_SSH_SECRET_KEY}}
+          key: ${{ secrets.AWS_SSH_SECRET_KEY}}
+          command_timeout: "1m"
+          script: |
+            rm -rf gomoku
+            sudo docker kill $(sudo docker ps -q)
+            git clone https://github.com/aczh/gomoku.git
+            cd gomoku
+            echo ${GITHUB_REF##*/}
+            git checkout ${GITHUB_REF##*/}
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@master
         with:
