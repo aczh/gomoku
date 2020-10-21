@@ -16,8 +16,6 @@ export default function reducer(state=initialState, action){
         case ACTION.SET_GAME_ID:
             return {...state, game_id: action.game_id}
         case ACTION.SET_DIALOG_VISIBILITY:
-            console.log("VISIBILITY SET")
-            console.log(action.dialog_visibility)
             return {...state, dialog_visibility: action.dialog_visibility}
     }
     return state

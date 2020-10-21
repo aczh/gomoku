@@ -1,6 +1,6 @@
 # node/webpack
 node_modules
-*/dist/bundle.js
+*/build/bundle.js
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -9,13 +9,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
 develop-eggs/
 .pytest_cache/
 *.egg-info
 dist/
-
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
