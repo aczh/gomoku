@@ -11,7 +11,7 @@ jobs:
         uses: garygrossgarten/github-action-ssh@release
         with:
           command: |
-            sudo pkill -9 -f server.py && rm -rf gomoku && git clone https://github.com/aczh/gomoku.git && cd gomoku && sudo inv build run &
+            sudo pkill -9 -f server.py && rm -rf gomoku && git clone https://github.com/aczh/gomoku.git && cd gomoku && sudo inv build run & && exit
           host: ec2-52-72-176-34.compute-1.amazonaws.com
           username: ubuntu
           passphrase: ${{ secrets.AWS_PASSWORD }}
