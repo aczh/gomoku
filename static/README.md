@@ -6,7 +6,7 @@ React/React Redux/Webpack/Material UI Frontend.
 Build the project via:
 ```console
 npm install
-npm build
+npm run build
 ```
 
 ## Structure
@@ -20,6 +20,6 @@ npm build
 
 NPM commands can be found in `package.json`.
 
-- `npm build`: builds the project for localhost development.
-- `npm watch`: watches for changes, continuously builds for localhost development.
-- `npm prod`: builds the product targeting the AWS URL, which is specified in `webpack.prod.js`
+- `npm run build`: builds the project for localhost development.
+- `npm run watch`: watches for changes, continuously builds for localhost development.
+- `npm run prod`: builds the product targeting the AWS URL, which is specified in `webpack.prod.js`
