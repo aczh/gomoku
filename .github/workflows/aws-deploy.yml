@@ -11,7 +11,7 @@ jobs:
         uses: garygrossgarten/github-action-ssh@release
         with:
           command: |
-            sudo pkill -9 -f server.py && rm -rf gomoku && https://github.com/aczh/gomoku.git && cd gomoku && git checkout ${GITHUB_REF##*/}
+            sudo docker kill $(docker ps -q) && rm -rf gomoku && https://github.com/aczh/gomoku.git && cd gomoku && git checkout ${GITHUB_REF##*/}
           host: ec2-52-72-176-34.compute-1.amazonaws.com
           username: ubuntu
           passphrase: ${{ secrets.AWS_PASSWORD }}
@@ -20,7 +20,7 @@ jobs:
         uses: garygrossgarten/github-action-ssh@release
         with:
           command: |
-            cd gomoku && nohup sudo -b inv build run
+            cd gomoku && sudo -b inv build run &
           host: ec2-52-72-176-34.compute-1.amazonaws.com
           username: ubuntu
           passphrase: ${{ secrets.AWS_PASSWORD }}
