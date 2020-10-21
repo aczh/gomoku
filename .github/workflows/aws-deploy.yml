@@ -30,7 +30,6 @@ jobs:
         with:
           host: ec2-52-72-176-34.compute-1.amazonaws.com
           username: ubuntu
-          password: ${{ secrets.AWS_PASSWORD }}
           key: ${{ secrets.AWS_SSH_SECRET_KEY}}
           script: |
             whoami
