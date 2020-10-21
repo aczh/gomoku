@@ -20,7 +20,6 @@ jobs:
           command_timeout: "5m"
           script: |
             sudo docker kill $(sudo docker ps -q)
-            [! -d 'gomoku' ] && git clone https://github.com/aczh/gomoku.git
-            cd gomoku
+            if cd gomoku; then git pull; else git clone https://github.com/aczh/gomoku.git && cd gomoku
             git checkout ${{github.sha}}
             nohup sudo inv run &>/dev/null &
