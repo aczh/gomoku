@@ -2,11 +2,17 @@
 
 Gomoku is a two player five-in-a-row game played on a 15x15 game.
 
+
 This repository hosts a Gomoku AI based on Victor Allis's Threat Space Search algorithm.
+
 The AI + game logic is written in Python.
+
 The frontend code is written in react/react-redux/webpack.
+
 The frontend code is deployed using Flask.
+
 The whole project is hosted on AWS: https://ec2-18-208-169-230.compute-1.amazonaws.com/
+
 
 ## Repository Structure
 
