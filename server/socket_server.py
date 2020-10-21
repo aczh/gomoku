@@ -1,15 +1,17 @@
 from flask_socketio import SocketIO, emit, join_room
-from gomoku import Game
+from gomoku import Game, who_won
 from gomoku.player import HumanSocket, Simple, ThreatSpace
 socket = SocketIO()
 
 games = {}
 
-def on_win(b):
+def on_win(game):
     socket.emit('game_won', {
-        'p1': bin(b.b1)[2:][::-1],
-        'p2': bin(b.b2)[2:][::-1],
-        'turns': b.turns,
+        'p1': bin(game.b.b1)[2:][::-1],
+        'p2': bin(game.b.b2)[2:][::-1],
+        'turns': game.b.turns,
+        'history': game.history,
+        'winner': who_won(game.b)
     })
 
 def on_draw(b):

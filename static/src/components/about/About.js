@@ -6,6 +6,9 @@ import '../../styles/about.css'
 const About = ({}) => {
     return (
         <div className='about-text'>
+            <Typography className='header' variant="h3">
+                Gomoku
+            </Typography>
             <Typography className='header' variant="h5">
                 Rules
             </Typography>
@@ -20,7 +23,7 @@ const About = ({}) => {
             </Typography>
             <Typography className='body' variant="body1">
                 Threats are an important concept in Gomoku.
-                Threats are a pattern of pieces on the board that threaten to win the game if not addressed immediately.
+                Threats are a pattern of pieces on the board that threaten to win the game if not addressed immediately, and thus force a response from the opponent.
                 The strongest threat is the 'open four', an unbroken chain of four pieces of the same color.
                 This is a winning threat unless the opponent can win in the next turn, because the opponent cannot block both ends of the threat at once.
             </Typography>
@@ -29,7 +32,7 @@ const About = ({}) => {
                 Threat Space Search
             </Typography>
             <Typography className='body' variant="body1">
-                Against a skilled opponent, winning a game often involves a series of forcing moves which lead to an unblockable threat.
+                Against a skilled opponent, winning a game often involves a series of forcing moves which lead to an unblockable threat/multiple threats.
                 Victor Allis developed a method called "Threat Space Search" which efficiently finds these forced sequences.
                 In his algorithm, Allis allows the opponent to play all available countermoves to a threat, significantly reducing the search space when looking for winning threat sequences.
             </Typography>
