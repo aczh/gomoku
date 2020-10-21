@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: clean and checkout
+      - name: clean, checkout, deploy
         uses: appleboy/ssh-action@master
         with:
           host: ec2-52-72-176-34.compute-1.amazonaws.com
@@ -20,14 +20,8 @@ jobs:
             git clone https://github.com/aczh/gomoku.git
             cd gomoku
             echo ${GITHUB_SHA}
+            echo ${GITHUB_SHA}
+            echo ${GITHUB_SHA}
+            echo ${GITHUB_SHA}
             git checkout ${GITHUB_SHA}
-      - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@master
-        with:
-          host: ec2-52-72-176-34.compute-1.amazonaws.com
-          username: ubuntu
-          key: ${{ secrets.AWS_SSH_SECRET_KEY}}
-          command_timeout: "1m"
-          script: |
-            cd gomoku
             nohup sudo inv run &>/dev/null &
