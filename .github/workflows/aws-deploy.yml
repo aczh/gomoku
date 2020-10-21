@@ -10,9 +10,8 @@ jobs:
     deploy:
         runs-on: ubuntu-latest
         steps:
-
             - uses: garygrossgarten/github-action-ssh@release
-            - name: ls -a via ssh
+            - name: Deploy to AWS
             with:
                 command: |
                     sudo pkill python
