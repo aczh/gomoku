@@ -15,9 +15,9 @@ const Sidebar = ({setGameID, socket, game_id, history}) => {
         let move_list = []
         for (let i = 0; i < history.length; i++){
             if (i % 2 === 0){
-                move_list.push(<Grid item xs={4}>{`${i / 2}.`}</Grid>)
+                move_list.push(<Grid item xs={4} key={`index${i}`}>{`${i / 2}.`}</Grid>)
             }
-            move_list.push(<Grid item xs={4}>{`(${history[i][0]}, ${history[i][1]})`}</Grid>)
+            move_list.push(<Grid item xs={4} key={i}>{`(${history[i][0]}, ${history[i][1]})`}</Grid>)
         }
         return move_list
     }
