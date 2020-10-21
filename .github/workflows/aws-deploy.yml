@@ -24,5 +24,5 @@ jobs:
             cd gomoku
             git pull
             git checkout ${{github.sha}}
-            sudo inv build
+            sudo inv prod
             nohup sudo inv run &>/dev/null &
