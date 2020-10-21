@@ -19,8 +19,8 @@ jobs:
             sudo docker kill $(sudo docker ps -q)
             git clone https://github.com/aczh/gomoku.git
             cd gomoku
-            echo ${GITHUB_REF}
-            git checkout ${GITHUB_REF##*/}
+            echo ${GITHUB_SHA}
+            git checkout ${GITHUB_SHA}
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@master
         with:
