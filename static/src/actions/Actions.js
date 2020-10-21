@@ -11,3 +11,7 @@ export function updateGame(p1, p2, turns, history){
 export function setGameID(game_id){
     return {type: ACTION.SET_GAME_ID, game_id: game_id}
 }
+
+export function setDialogVisibility(dialog_visibility){
+    return {type: ACTION.SET_DIALOG_VISIBILITY, dialog_visibility: dialog_visibility}
+}
