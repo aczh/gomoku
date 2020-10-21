@@ -19,9 +19,5 @@ jobs:
             sudo docker kill $(sudo docker ps -q)
             git clone https://github.com/aczh/gomoku.git
             cd gomoku
-            echo ${{github.sha}}
-            echo ${GITHUB_SHA}
-            echo ${GITHUB_SHA}
-            echo ${GITHUB_SHA}
-            git checkout ${GITHUB_SHA}
+            git checkout ${{github.sha}}
             nohup sudo inv run &>/dev/null &
