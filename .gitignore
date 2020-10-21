@@ -1,6 +1,6 @@
 # node/webpack
 node_modules
-*/dist/bundle.js
+*/build/bundle.js
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
