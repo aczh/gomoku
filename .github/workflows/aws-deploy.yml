@@ -19,7 +19,7 @@ jobs:
             sudo docker kill $(sudo docker ps -q)
             git clone https://github.com/aczh/gomoku.git
             cd gomoku
-            echo ${GITHUB_SHA}
+            echo ${{github.sha}}
             echo ${GITHUB_SHA}
             echo ${GITHUB_SHA}
             echo ${GITHUB_SHA}
