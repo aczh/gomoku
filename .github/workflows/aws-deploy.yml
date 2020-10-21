@@ -1,6 +1,10 @@
 name: Command via SSH
 
-on: push
+on:
+  push:
+    branches:
+      - master
+      - develop
 
 jobs:
   build:
@@ -15,7 +19,6 @@ jobs:
           key: ${{ secrets.AWS_SSH_SECRET_KEY}}
           command_timeout: "1m"
           script: |
-            rm -rf gomoku
             sudo docker kill $(sudo docker ps -q)
             git clone https://github.com/aczh/gomoku.git
             cd gomoku
