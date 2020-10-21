@@ -2,9 +2,9 @@ name: Command via SSH
 
 on:
   push:
-    branches:
-      - master
-      - develop
+    # branches:
+    #   - master
+    #   - develop
 
 jobs:
   build:
@@ -20,7 +20,7 @@ jobs:
           command_timeout: "5m"
           script: |
             sudo docker kill $(sudo docker ps -q)
-            git clone https://github.com/aczh/gomoku.git
+            [! -d 'gomoku' ] && git clone https://github.com/aczh/gomoku.git
             cd gomoku
             git checkout ${{github.sha}}
             nohup sudo inv run &>/dev/null &
