@@ -34,4 +34,5 @@ jobs:
           command_timeout: "1m"
           script: |
             cd gomoku
-            nohup sudo inv run &
+            nohup sudo inv run & >/dev/null
+            exit
