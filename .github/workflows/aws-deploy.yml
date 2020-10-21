@@ -22,5 +22,7 @@ jobs:
             sudo docker kill $(sudo docker ps -q)
             git clone https://github.com/aczh/gomoku.git
             cd gomoku
+            git pull
             git checkout ${{github.sha}}
+            sudo inv build --prod
             nohup sudo inv run &>/dev/null &
