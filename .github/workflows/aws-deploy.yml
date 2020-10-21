@@ -14,6 +14,7 @@ jobs:
             sudo pkill python &&
             rm -rf gomoku &&
             git clone https://github.com/aczh/gomoku.git &&
+            cd gomoku && 
             git checkout ${GITHUB_REF} &&
             sudo inv build run
           host: ec2-52-72-176-34.compute-1.amazonaws.com
