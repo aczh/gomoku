@@ -1,17 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@material-ui/core'
-import { setDialogVisibility, setGameID } from '../../actions/Actions'
+import { setDialogVisibility } from '../../actions/Actions'
 
-const GameOver = ({socket, setGameID, dialog_visibility, setDialogVisibility, turns}) => {
+const GameOver = ({socket, dialog_visibility, setDialogVisibility, turns}) => {
     const handleClose = () => {
         setDialogVisibility(false)
     };
 
     const new_game = () => {
-        let game_id = new Date().getTime()
-        setGameID(game_id)
-        socket.emit('start_game', {game_id: game_id})
+        socket.emit('start_game')
         handleClose()
     }
 
@@ -31,7 +29,7 @@ const GameOver = ({socket, setGameID, dialog_visibility, setDialogVisibility, tu
               <Button onClick={handleClose} variant="contained">
                 Close
               </Button>
-              <Button onClick={new_game} variant="contained" color="primary" autoFocus>
+              <Button onClick={(new_game)} variant="contained" color="primary" autoFocus>
                 New Game
               </Button>
             </DialogActions>
@@ -45,6 +43,5 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch =>({
     setDialogVisibility: (visibility) => dispatch(setDialogVisibility(visibility)),
-    setGameID: (game_id) => dispatch(setGameID(game_id)),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(GameOver)

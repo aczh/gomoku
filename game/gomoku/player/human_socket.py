@@ -1,20 +1,11 @@
 from flask_socketio import SocketIO, emit, join_room
 
 class HumanSocket:
-    def __init__(self, socket):
+    def __init__(self, socket, room):
         self.socket = socket
+        self.room = room
         self.game = None
         self.last_board = None
-
-        @socket.on('move_made')
-        def move_made(data):
-            try:
-                move = int(data.get('move'))
-                self.game.make_move(move)
-                print(f'Socket made move at: {move}')
-            except Exception as e:
-                print(f'Socket move failed with exception: {e}')
-                self.request_move(self.last_board, self.game)
 
     def request_move(self, b, game):
         print('Requesting move...')
@@ -25,4 +16,4 @@ class HumanSocket:
             'p2': bin(b.b2)[2:][::-1],
             'turns': b.turns,
             'history': game.history,
-        })
+        }, room=self.room)

@@ -8,8 +8,8 @@ import '../../styles/game.css'
 import { updateGame, setDialogVisibility } from '../../actions/Actions'
 
 import io from 'socket.io-client'
-
 const socket = io(process.env.API_URL)
+
 
 const Game = ({updateGame, setDialogVisibility}) => {
     React.useEffect(() => {

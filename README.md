@@ -49,7 +49,6 @@ python server/server.py
 
 ## TODO
 - Fully implement database.
-- Clear notification when a player wins
 - Allow move takebacks.
 - Users
     - User login

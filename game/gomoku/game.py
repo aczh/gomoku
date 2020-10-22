@@ -6,10 +6,8 @@ from . board import Board
 from . threat.threat_search import has_five
 from . utils import to_row
 
-VERBOSE=1
-
 class Game:
-    def __init__(self, p1, p2, on_win=None, on_draw=None):
+    def __init__(self, p1, p2, on_win=None, on_draw=None, verbose=1):
         '''Game instance.
 
         Parameters
@@ -25,10 +23,11 @@ class Game:
         self.history = []
         self.on_win = on_win
         self.on_draw = on_draw
+        self.verbose = verbose
 
     def play(self):
         '''Begins the game. Requests a move from the current player.'''
-        if VERBOSE:
+        if self.verbose:
             print('\n====================================================================')
             print('Player {}\'s turn to move.'.format(self.b.turns % 2 + 1))
             print(self.b)
@@ -45,7 +44,7 @@ class Game:
         self.b.move(*move)
         self.history.append(move)
 
-        if VERBOSE:
+        if self.verbose:
             print('\n====================================================================')
             print(f'Player {2 - self.b.turns % 2} placed their piece at {move[0]}, {move[1]}')
             print(f'Player {self.b.turns % 2 + 1}\'s turn to move.')

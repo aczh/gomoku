@@ -5,6 +5,10 @@ from socket_server import socket
 from api.user import api as user
 from api.game import api as game
 
+import logging
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
 # initialize flask
 app = Flask(__name__, static_folder='../static/build', template_folder='../static/public')
 app.register_blueprint(user)
