@@ -8,13 +8,19 @@
 }
 
 .header {
-    padding-bottom: 40px;
+    padding-bottom: 30px;
+    padding-top: 10px;
 }
 
 .header-appbar {
+    margin-top: 5px;
     background-color: #3d456c !important;
 }
 
 .PrivateTabIndicator-colorSecondary-3 {
     background-color: #ac3b61 !important;
+}
+
+.icons {
+    margin-left: auto;
 }

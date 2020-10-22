@@ -1,4 +1,4 @@
-name: Command via SSH
+name: Deploy to AWS
 
 on:
   push:

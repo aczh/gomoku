@@ -17,7 +17,7 @@ const Sidebar = ({setGameID, socket, game_id, history}) => {
             if (i % 2 === 0){
                 move_list.push(<Grid item xs={4} key={`index${i}`}>{`${i / 2}.`}</Grid>)
             }
-            move_list.push(<Grid item xs={4} key={i}>{`(${history[i][0]}, ${history[i][1]})`}</Grid>)
+            move_list.push(<Grid item xs={4} key={i}>{`${String.fromCharCode('A'.charCodeAt()+history[i][1])}${history[i][0]+1}`}</Grid>)
         }
         return move_list
     }
