@@ -1,5 +1,7 @@
 import React from 'react'
-import { AppBar, Typography, Button, Tabs, Tab, Box } from '@material-ui/core'
+import { AppBar, Typography, Button, Tabs, Tab, Box, IconButton } from '@material-ui/core'
+import GitHubIcon from '@material-ui/icons/GitHub'
+import LinkedInIcon from '@material-ui/icons/LinkedIn'
 import Game from '../game'
 import About from '../about'
 import '../../styles/landing.css'
@@ -31,6 +33,19 @@ const Landing = ({}) => {
         setValue(newValue);
     }
 
+    const ButtonInTabs = ({ className, onClick, children }) => {
+        return (
+            <div className='icons'>
+                <IconButton color="inherit" href='https://www.linkedin.com/in/allenczhang/'>
+                    <LinkedInIcon />
+                </IconButton>
+                <IconButton color="inherit" href='https://github.com/aczh/gomoku'>
+                    <GitHubIcon />
+                </IconButton>
+            </div>
+        )
+    };
+
     return (
         <div className='header'>
             <AppBar position="static" className='header-appbar'>
@@ -41,7 +56,10 @@ const Landing = ({}) => {
                     <Tab label={
                         <Typography variant="h6">Play</Typography>
                     }/>
+
+                    <ButtonInTabs/>
                 </Tabs>
+
             </AppBar>
             <TabPanel value={value} index={0}>
                 <About/>
