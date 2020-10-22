@@ -1,11 +1,10 @@
 import React, {useEffect} from 'react'
 import { connect } from 'react-redux'
-import { newGame } from '../../actions/Actions'
 import { TextField, Button, Grid, Paper } from '@material-ui/core'
 import '../../styles/sidebar.css'
 import axios from 'axios';
 
-const Sidebar = ({setGameID, socket, game_id, history, newGame}) => {
+const Sidebar = ({setGameID, socket, game_id, history}) => {
     const construct_history = () => {
         let move_list = []
         for (let i = 0; i < history.length; i++){
@@ -20,7 +19,7 @@ const Sidebar = ({setGameID, socket, game_id, history, newGame}) => {
     return (
         <div className='sidebar'>
             <div className='row'>
-                <Button variant='contained' color='primary' disableElevation onClick={() => newGame()}>
+                <Button variant='contained' color='primary' disableElevation onClick={() => socket.emit('start_game')}>
                     New Game
                 </Button>
             </div>
@@ -35,10 +34,7 @@ const mapStateToProps = state => ({
     game_id: state.game.game_id,
     history: state.game.history,
 })
-const mapDispatchToProps = dispatch =>({
-    newGame: () => dispatch(newGame()),
-})
 export default connect(
   mapStateToProps,
-  mapDispatchToProps,
+  null,
 )(Sidebar)

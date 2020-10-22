@@ -1,15 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button } from '@material-ui/core'
-import { setDialogVisibility, newGame } from '../../actions/Actions'
+import { setDialogVisibility } from '../../actions/Actions'
 
-const GameOver = ({socket, newGame, dialog_visibility, setDialogVisibility, turns}) => {
+const GameOver = ({socket, dialog_visibility, setDialogVisibility, turns}) => {
     const handleClose = () => {
         setDialogVisibility(false)
     };
 
     const new_game = () => {
-        newGame()
+        socket.emit('start_game')
         handleClose()
     }
 
@@ -43,6 +43,5 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch =>({
     setDialogVisibility: (visibility) => dispatch(setDialogVisibility(visibility)),
-    newGame: () => dispatch(newGame()),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(GameOver)

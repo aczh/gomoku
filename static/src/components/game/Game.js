@@ -5,7 +5,10 @@ import Board from './Board'
 import Sidebar from './Sidebar'
 import GameOver from './GameOver'
 import '../../styles/game.css'
-import { updateGame, setDialogVisibility, socket } from '../../actions/Actions'
+import { updateGame, setDialogVisibility } from '../../actions/Actions'
+
+import io from 'socket.io-client'
+const socket = io(process.env.API_URL)
 
 
 const Game = ({updateGame, setDialogVisibility}) => {

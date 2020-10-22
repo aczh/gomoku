@@ -5,7 +5,6 @@ const initialState = {
     p2: '0',
     turns: 0,
     history: [],
-    game_id: null,
     dialog_visibility: false,
 }
 
@@ -15,8 +14,6 @@ export default function reducer(state=initialState, action){
             return {...state, p1: action.p1, p2: action.p2, turns: action.turns, history: action.history}
         case ACTION.SET_DIALOG_VISIBILITY:
             return {...state, dialog_visibility: action.dialog_visibility}
-        case ACTION.NEW_GAME:
-            return {...state, game_id: action.game_id}
     }
     return state
 }

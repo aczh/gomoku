@@ -28,7 +28,7 @@ def move_made(data):
         print(f'Invalid move {move} from client {client_id}, exception {e}')
 
 @socket.on('start_game')
-def start_game(data):
+def start_game():
     client_id = request.sid
     print(f"starting game for client: {client_id}")
     games[client_id] = Game(ThreatSpace(), HumanSocket(socket, room=client_id), on_win=on_win, on_draw=on_draw, verbose=0)
