@@ -2,7 +2,6 @@ import React, {useEffect} from 'react'
 import { connect } from 'react-redux'
 import { TextField, Button, Grid, Paper } from '@material-ui/core'
 import '../../styles/sidebar.css'
-import axios from 'axios';
 
 const Sidebar = ({setGameID, socket, game_id, history}) => {
     const construct_history = () => {
