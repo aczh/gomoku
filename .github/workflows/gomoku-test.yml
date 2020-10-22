@@ -5,14 +5,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Test gomoku package
       uses: actions/setup-python@v2
       with:
         python-version: 3.6
-    - name: Install dependencies
+    - name: Install deps, pip install, pytest.
       run: |
         cd game
         python -m pip install --upgrade pip
-        sudo apt-get install libmpc-dev 
+        sudo apt-get install libmpc-dev
         pip install .
         pytest
