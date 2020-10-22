@@ -1,3 +1,5 @@
+name: Gomoku Pytest
+
 on: push
 
 jobs:
