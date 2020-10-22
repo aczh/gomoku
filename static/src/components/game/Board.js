@@ -65,8 +65,26 @@ const Board = ({socket, updateGame, p1, p2, turns, history}) => {
         return circles
     }
 
+    const construct_x_labels = () => {
+        return <div className='x-label'>{'ABCDEFGHIJKLMNO'}</div>
+    }
+
+    const construct_y_labels = () => {
+        let y_labels = []
+        for (let index = 0; index < 15; index++){
+            y_labels.push(<div key={`y-label-${index}`} className='y-label'>{index + 1}</div>)
+        }
+        return y_labels
+    }
+
     return (
         <div className='board'>
+            <div className='y-labels'>
+                {construct_y_labels()}
+            </div>
+            <div className='x-labels'>
+                {construct_x_labels()}
+            </div>
             <div className='board-grid lines'>
                 {construct_board()}
             </div>

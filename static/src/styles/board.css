@@ -1,3 +1,26 @@
+.y-labels {
+    position: absolute;
+    z-index: -1;
+    margin-top: 40px;
+    margin-left: -30px;
+}
+
+.y-label {
+    text-align: right;
+    margin-bottom: 32.99px;
+}
+
+.x-labels {
+    position: absolute;
+    z-index: -1;
+    top: 825px;
+    left: 44px;
+}
+
+.x-label {
+    letter-spacing: 40.5px;
+}
+
 .board {
     position: relative;
     width: 800px;
@@ -52,6 +75,7 @@
 .highlight {
     animation: scaleIn 1s infinite cubic-bezier(.36, .11, .89, .32);
 }
+
 @keyframes scaleIn {
   from {
     transform: scale(1, 1);
@@ -62,34 +86,3 @@
     opacity: 0.5;
   }
 }
-/* .highlight {
-    animation: fadeIn ease 1s;
-    -webkit-animation: fadeIn ease 1s;
-    -moz-animation: fadeIn ease 1s;
-    -o-animation: fadeIn ease 1s;
-    -ms-animation: fadeIn ease 1s;
-} */
-/* @keyframes fadeIn {
-0% {opacity:0;}
-100% {opacity:1;}
-}
-
-@-moz-keyframes fadeIn {
-0% {opacity:0;}
-100% {opacity:1;}
-}
-
-@-webkit-keyframes fadeIn {
-0% {opacity:0;}
-100% {opacity:1;}
-}
-
-@-o-keyframes fadeIn {
-0% {opacity:0;}
-100% {opacity:1;}
-}
-
-@-ms-keyframes fadeIn {
-0% {opacity:0;}
-100% {opacity:1;}
-} */
