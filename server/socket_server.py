@@ -1,3 +1,4 @@
+from flask import Flask, request
 from flask_socketio import SocketIO, emit, join_room
 from gomoku import Game, who_won
 from gomoku.player import HumanSocket, Simple, ThreatSpace
@@ -12,17 +13,23 @@ def on_win(game):
         'turns': game.b.turns,
         'history': game.history,
         'winner': who_won(game.b)
-    })
+    }, room=request.sid)
 
 def on_draw(b):
-    socket.emit('game_drawn')
-    print("DRAW")
+    socket.emit('game_drawn', room=request.sid)
+
+@socket.on('move_made')
+def move_made(data):
+    client_id = request.sid
+    try:
+        move = int(data.get('move'))
+        games[client_id].make_move(move)
+    except Exception as e:
+        print(f'Invalid move {move} from client {client_id}, exception {e}')
 
 @socket.on('start_game')
 def start_game(data):
-    game_id = data.get('game_id')
-    if game_id in games:
-        print(f'Game already started for game_id: {game_id}')
-    else:
-        games[game_id] = Game(ThreatSpace(), HumanSocket(socket), on_win=on_win, on_draw=on_draw)
-    games[game_id].play()
+    client_id = request.sid
+    print(f"starting game for client: {client_id}")
+    games[client_id] = Game(ThreatSpace(), HumanSocket(socket, room=client_id), on_win=on_win, on_draw=on_draw, verbose=0)
+    games[client_id].play()
