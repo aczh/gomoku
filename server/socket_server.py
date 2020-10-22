@@ -18,6 +18,11 @@ def on_win(game):
 def on_draw(b):
     socket.emit('game_drawn', room=request.sid)
 
+@socket.on('disconnect')
+def on_disconnect():
+    client_id = request.sid
+    del games[client_id]
+
 @socket.on('move_made')
 def move_made(data):
     client_id = request.sid
