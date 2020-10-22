@@ -1,11 +1,6 @@
 import * as ACTION from '../constants/ActionConstants'
 import axios from 'axios';
 
-
-export function switchPage(page){
-    return {type: ACTION.SWITCH_PAGE, page: page}
-}
-
 export function updateGame(p1, p2, turns, history){
     return {type: ACTION.UPDATE_GAME, p1: p1, p2: p2, turns: turns, history: history}
 }
