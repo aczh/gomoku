@@ -21,7 +21,8 @@ def on_draw(b):
 @socket.on('disconnect')
 def on_disconnect():
     client_id = request.sid
-    del games[client_id]
+    if client_id in games:
+        del games[client_id]
 
 @socket.on('move_made')
 def move_made(data):
