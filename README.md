@@ -11,7 +11,7 @@ The frontend code is written in react/react-redux/webpack.
 
 The frontend code is deployed using Flask.
 
-The whole project is hosted on AWS: https://ec2-18-208-169-230.compute-1.amazonaws.com/
+The whole project is hosted on AWS: http://ec2-52-72-176-34.compute-1.amazonaws.com/
 
 
 ## Repository Structure
