@@ -24,5 +24,6 @@ jobs:
             cd gomoku
             git pull
             git checkout ${{github.sha}}
+            pip3 install invoke
             sudo inv build --prod
             nohup sudo inv run &>/dev/null &
