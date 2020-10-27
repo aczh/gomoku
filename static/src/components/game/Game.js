@@ -17,7 +17,9 @@ const Game = ({updateGame, setDialogVisibility}) => {
             updateGame(data.p1, data.p2, data.turns, data.history)
         })
         socket.on('game_won', (data) => {
-            updateGame(data.p1, data.p2, data.turns, data.history)
+            // set turns to turns + 1 so it isn't our move
+            // this prevents users from making additional moves (hacky, but works)
+            updateGame(data.p1, data.p2, data.turns + 1, data.history)
             setDialogVisibility(true)
         })
 
