@@ -22,7 +22,7 @@ const GameOver = ({socket, dialog_visibility, setDialogVisibility, turns}) => {
             <DialogTitle>{"Game Over."}</DialogTitle>
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                {turns % 2 === 0 ? "You win!" : "Computer won."}
+                {turns % 2 === 1 ? "You win!" : "Computer won."}
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
