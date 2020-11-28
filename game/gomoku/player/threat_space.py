@@ -5,7 +5,7 @@ from .. threat.threat_space import threat_space_search
 from .. threat.threat import ThreatType
 from .. utils import to_row
 
-VERBOSE=0
+VERBOSE=1
 
 class ThreatSpace:
     def __init__(self):

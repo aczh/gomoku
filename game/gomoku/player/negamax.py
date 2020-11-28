@@ -9,12 +9,16 @@ VERBOSE=1
 
 
 class Negamax:
+    def request_move(self, b, game):
+        move = self.make_move(b)
+        game.make_move(move)
+
     def negamax(self, b, depth=2, multiplier=1):
         print(b)
         if depth <= 0:
             # print(threat_space_search(b))
             if threat_space_search(b):
-                return 1
+                return 1 * multiplier
             return 0
 
         val = -1000

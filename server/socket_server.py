@@ -1,7 +1,7 @@
 from flask import Flask, request
 from flask_socketio import SocketIO, emit, join_room
 from gomoku import Game, who_won
-from gomoku.player import HumanSocket, Simple, ThreatSpace
+from gomoku.player import HumanSocket, Simple, ThreatSpace, Negamax, AlphaBeta
 socket = SocketIO()
 
 games = {}
@@ -37,5 +37,5 @@ def move_made(data):
 def start_game():
     client_id = request.sid
     print(f"starting game for client: {client_id}")
-    games[client_id] = Game(ThreatSpace(), HumanSocket(socket, room=client_id), on_win=on_win, on_draw=on_draw, verbose=0)
+    games[client_id] = Game(AlphaBeta(), HumanSocket(socket, room=client_id), on_win=on_win, on_draw=on_draw, verbose=1)
     games[client_id].play()
